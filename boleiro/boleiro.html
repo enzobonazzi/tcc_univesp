@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BoleirApp — Acha Racha</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde: #00C853;
+    --verde-escuro: #007A33;
+    --preto: #0A0A0A;
+    --cinza-escuro: #141414;
+    --cinza-medio: #1E1E1E;
+    --cinza-borda: #2A2A2A;
+    --branco: #F5F5F5;
+    --amarelo: #FFD600;
+    --laranja: #FF6B00;
+    --texto-muted: #888;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--preto);
+    color: var(--branco);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* CAMPO TEXTURE BG */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(0,200,83,0.03) 60px, rgba(0,200,83,0.03) 62px),
+      repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(0,200,83,0.03) 60px, rgba(0,200,83,0.03) 62px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--cinza-borda);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    color: var(--verde);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .logo span { color: var(--branco); }
+
+  .logo-ball {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+  }
+
+  nav { display: flex; gap: 0.5rem; }
+
+  .nav-btn {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--texto-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 1.2rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .nav-btn:hover { color: var(--branco); border-color: var(--cinza-borda); }
+  .nav-btn.active { background: var(--verde); color: var(--preto); border-color: var(--verde); font-weight: 600; }
+
+  .btn-anunciar {
+    background: var(--verde);
+    color: var(--preto);
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.55rem 1.4rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-anunciar:hover { background: #00E060; transform: scale(1.02); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 5rem 2rem 3rem;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    background: rgba(0,200,83,0.1);
+    border: 1px solid rgba(0,200,83,0.3);
+    color: var(--verde);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0.35rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1.5rem;
+    animation: fadeInDown 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: 2px;
+    animation: fadeInUp 0.7s 0.1s ease both;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--verde);
+    position: relative;
+  }
+
+  .hero p {
+    color: var(--texto-muted);
+    font-size: 1.05rem;
+    margin-top: 1.2rem;
+    animation: fadeInUp 0.7s 0.2s ease both;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    padding: 1.5rem 2rem 2.5rem;
+    animation: fadeInUp 0.7s 0.3s ease both;
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--verde);
+    line-height: 1;
+  }
+  .stat-label { font-size: 0.75rem; color: var(--texto-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  /* FILTROS */
+  .filter-section {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto 3rem;
+    padding: 0 1.5rem;
+    animation: fadeInUp 0.7s 0.4s ease both;
+  }
+
+  .filter-card {
+    background: var(--cinza-escuro);
+    border: 1px solid var(--cinza-borda);
+    border-radius: 20px;
+    padding: 1.8rem;
+  }
+
+  .filter-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--verde);
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+  }
+
+  .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .filter-group label {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--texto-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+  }
+
+  .filter-group select,
+  .filter-group input {
+    width: 100%;
+    background: var(--cinza-medio);
+    border: 1px solid var(--cinza-borda);
+    color: var(--branco);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  .filter-group select:focus,
+  .filter-group input:focus {
+    border-color: var(--verde);
+  }
+
+  .filter-group select option { background: #1E1E1E; }
+
+  .posicoes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .pos-btn {
+    background: var(--cinza-medio);
+    border: 1px solid var(--cinza-borda);
+    color: var(--texto-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .pos-btn:hover { border-color: var(--verde); color: var(--verde); }
+  .pos-btn.selected { background: var(--verde); border-color: var(--verde); color: var(--preto); }
+
+  .filter-actions {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: flex-end;
+  }
+
+  .btn-limpar {
+    background: none;
+    border: 1px solid var(--cinza-borda);
+    color: var(--texto-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.65rem 1.4rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-limpar:hover { border-color: var(--branco); color: var(--branco); }
+
+  .btn-buscar {
+    background: var(--verde);
+    border: none;
+    color: var(--preto);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.65rem 2rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-buscar:hover { background: #00E060; }
+
+  /* TABS */
+  .tabs-section {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--cinza-borda);
+    margin-bottom: 1.5rem;
+  }
+
+  .tab {
+    background: none;
+    border: none;
+    color: var(--texto-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.2s;
+  }
+
+  .tab.active { color: var(--verde); border-bottom-color: var(--verde); font-weight: 600; }
+  .tab:hover:not(.active) { color: var(--branco); }
+
+  /* RESULTADO COUNT */
+  .result-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: var(--texto-muted);
+  }
+
+  .result-count strong { color: var(--branco); }
+
+  .sort-select {
+    background: var(--cinza-medio);
+    border: 1px solid var(--cinza-borda);
+    color: var(--branco);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  /* CARDS */
+  .cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 4rem;
+  }
+
+  .jogo-card {
+    background: var(--cinza-escuro);
+    border: 1px solid var(--cinza-borda);
+    border-radius: 16px;
+    padding: 1.4rem 1.6rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.2rem;
+    align-items: center;
+    transition: all 0.2s;
+    cursor: pointer;
+    animation: fadeInUp 0.4s ease both;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .jogo-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--verde);
+    border-radius: 3px 0 0 3px;
+  }
+
+  .jogo-card.urgente::before { background: var(--laranja); }
+  .jogo-card.cheio::before { background: var(--texto-muted); }
+
+  .jogo-card:hover {
+    border-color: rgba(0,200,83,0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,200,83,0.08);
+  }
+
+  .jogo-card.cheio:hover { border-color: var(--cinza-borda); transform: none; box-shadow: none; }
+
+  /* Data/hora coluna */
+  .card-data {
+    text-align: center;
+    min-width: 72px;
+  }
+
+  .card-dia {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    line-height: 1;
+    color: var(--verde);
+  }
+
+  .card-mes {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--texto-muted);
+  }
+
+  .card-hora {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--branco);
+    margin-top: 0.3rem;
+  }
+
+  /* Info coluna */
+  .card-info { min-width: 0; }
+
+  .card-titulo {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--branco);
+    margin-bottom: 0.3rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-local {
+    font-size: 0.82rem;
+    color: var(--texto-muted);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid;
+  }
+
+  .tag-nivel-basico { color: #4FC3F7; border-color: rgba(79,195,247,0.3); background: rgba(79,195,247,0.08); }
+  .tag-nivel-intermediario { color: var(--amarelo); border-color: rgba(255,214,0,0.3); background: rgba(255,214,0,0.08); }
+  .tag-nivel-avancado { color: var(--laranja); border-color: rgba(255,107,0,0.3); background: rgba(255,107,0,0.08); }
+  .tag-tipo { color: var(--verde); border-color: rgba(0,200,83,0.3); background: rgba(0,200,83,0.08); }
+  .tag-pos { color: #CE93D8; border-color: rgba(206,147,216,0.3); background: rgba(206,147,216,0.08); }
+
+  /* Vagas coluna */
+  .card-vagas { text-align: right; }
+
+  .vagas-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--verde);
+  }
+
+  .vagas-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--texto-muted);
+  }
+
+  .btn-entrar {
+    display: block;
+    margin-top: 0.6rem;
+    background: var(--verde);
+    border: none;
+    color: var(--preto);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .btn-entrar:hover { background: #00E060; }
+
+  .btn-entrar.cheio-btn {
+    background: var(--cinza-borda);
+    color: var(--texto-muted);
+    cursor: not-allowed;
+  }
+
+  .badge-urgente {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.8rem;
+    background: var(--laranja);
+    color: white;
+    font-size: 0.55rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.1rem 0.2rem;
+    border-radius: 999px;
+  }
+
+  /* MODAL ANUNCIAR */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--cinza-escuro);
+    border: 1px solid var(--cinza-borda);
+    border-radius: 20px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalIn 0.3s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.8rem;
+  }
+
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--verde);
+    letter-spacing: 1px;
+  }
+
+  .modal-close {
+    background: var(--cinza-medio);
+    border: 1px solid var(--cinza-borda);
+    color: var(--texto-muted);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover { color: var(--branco); border-color: var(--branco); }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  .form-group label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--texto-muted);
+    font-weight: 600;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background: var(--cinza-medio);
+    border: 1px solid var(--cinza-borda);
+    color: var(--branco);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--verde); }
+
+  .form-group select option { background: #1e1e1e; }
+
+  .posicoes-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .pos-form-btn {
+    background: var(--cinza-medio);
+    border: 1px solid var(--cinza-borda);
+    color: var(--texto-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+
+  .pos-form-btn.selected { background: rgba(206,147,216,0.15); border-color: #CE93D8; color: #CE93D8; }
+
+  .btn-publicar {
+    width: 100%;
+    background: var(--verde);
+    border: none;
+    color: var(--preto);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.9rem;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-publicar:hover { background: #00E060; }
+
+  /* MODAL DETALHE */
+  .modal-detalhe-body { padding: 0; }
+
+  .detalhe-header {
+    background: linear-gradient(135deg, var(--verde-escuro), #004d20);
+    padding: 2rem;
+    border-radius: 12px 12px 0 0;
+    margin: -2rem -2rem 1.5rem;
+  }
+
+  .detalhe-nome { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 1px; }
+  .detalhe-local { color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 0.3rem; }
+
+  .detalhe-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .detalhe-item {
+    background: var(--cinza-medio);
+    border: 1px solid var(--cinza-borda);
+    border-radius: 10px;
+    padding: 0.8rem;
+    text-align: center;
+  }
+
+  .detalhe-item-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--verde);
+  }
+
+  .detalhe-item-key {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--texto-muted);
+    margin-top: 0.2rem;
+  }
+
+  .detalhe-descricao {
+    background: var(--cinza-medio);
+    border-radius: 10px;
+    padding: 1rem;
+    font-size: 0.88rem;
+    color: var(--texto-muted);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .detalhe-posicoes {
+    margin-bottom: 1.5rem;
+  }
+
+  .detalhe-posicoes h4 {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--texto-muted);
+    margin-bottom: 0.7rem;
+    font-weight: 600;
+  }
+
+  .btn-confirmar {
+    width: 100%;
+    background: var(--verde);
+    border: none;
+    color: var(--preto);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.9rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-confirmar:hover { background: #00E060; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--verde);
+    color: var(--preto);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.8rem 2rem;
+    border-radius: 999px;
+    z-index: 500;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* VAZIO */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+
+  .empty-ball {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: bounce 1.5s ease infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .empty-state h3 { font-size: 1.2rem; color: var(--texto-muted); font-weight: 400; }
+
+  /* ANIMATIONS */
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* CAMPO VISUAL */
+  .campo-divider {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1.5rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .campo-line {
+    flex: 1;
+    height: 1px;
+    background: var(--cinza-borda);
+  }
+
+  .campo-center {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--texto-muted);
+    padding: 0 1rem;
+    font-weight: 600;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    header { padding: 0 1rem; }
+    nav { display: none; }
+    .hero { padding: 3rem 1rem 2rem; }
+    .stats-bar { gap: 1.5rem; }
+    .filter-card { padding: 1.2rem; }
+    .filter-grid { grid-template-columns: 1fr 1fr; }
+    .jogo-card { grid-template-columns: auto 1fr; gap: 0.8rem; }
+    .card-vagas { display: none; }
+    .form-grid { grid-template-columns: 1fr; }
+    .detalhe-grid { grid-template-columns: repeat(2, 1fr); }
+    .btn-anunciar span { display: none; }
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--preto); }
+  ::-webkit-scrollbar-thumb { background: var(--cinza-borda); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <svg class="logo-ball" viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="13" fill="#00C853" stroke="#007A33" stroke-width="1.5"/>
+      <path d="M14 5 L17 10 L14 10 L11 10 Z" fill="#007A33" opacity="0.8"/>
+      <path d="M20 10 L23 14 L20 18 L18 14 Z" fill="#007A33" opacity="0.8"/>
+      <path d="M8 10 L5 14 L8 18 L10 14 Z" fill="#007A33" opacity="0.8"/>
+      <path d="M14 23 L11 18 L14 18 L17 18 Z" fill="#007A33" opacity="0.8"/>
+    </svg>
+    Boleiro<span>App</span>
+  </div>
+
+  <nav>
+    <button class="nav-btn active" onclick="mudarAba('partidas')">🔍 Buscar Racha</button>
+    <button class="nav-btn" onclick="mudarAba('meus')">⚽ Meus Jogos</button>
+  </nav>
+
+  <button class="btn-anunciar" onclick="abrirModalAnunciar()">
+    + <span>Anunciar Racha</span>
+  </button>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">⚽ A maior rede de rachão do Brasil</div>
+  <h1>Acha<br><em>Racha</em></h1>
+  <p>Filtra por cidade, dia, horário e posição — e entra no jogo.</p>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-num" id="stat-jogos">247</div>
+    <div class="stat-label">Jogos hoje</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">1.843</div>
+    <div class="stat-label">Boleiros ativos</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">89</div>
+    <div class="stat-label">Cidades</div>
+  </div>
+</div>
+
+<!-- FILTROS -->
+<section class="filter-section">
+  <div class="filter-card">
+    <div class="filter-title">🎯 Filtrar partidas</div>
+    <div class="filter-grid">
+      <div class="filter-group">
+        <label>Cidade</label>
+        <select id="f-cidade">
+          <option value="">Todas as cidades</option>
+          <option>São Paulo - SP</option>
+          <option>Campinas - SP</option>
+          <option>Piracicaba - SP</option>
+          <option>Ribeirão Preto - SP</option>
+          <option>Rio de Janeiro - RJ</option>
+          <option>Belo Horizonte - MG</option>
+          <option>Curitiba - PR</option>
+          <option>Porto Alegre - RS</option>
+          <option>Brasília - DF</option>
+          <option>Salvador - BA</option>
+          <option>Fortaleza - CE</option>
+          <option>Recife - PE</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Data</label>
+        <input type="date" id="f-data">
+      </div>
+      <div class="filter-group">
+        <label>Horário</label>
+        <select id="f-horario">
+          <option value="">Qualquer horário</option>
+          <option>Manhã (até 12h)</option>
+          <option>Tarde (12h–18h)</option>
+          <option>Noite (após 18h)</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Nível</label>
+        <select id="f-nivel">
+          <option value="">Todos os níveis</option>
+          <option>Básico</option>
+          <option>Intermediário</option>
+          <option>Avançado</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filter-title" style="margin-top:0.5rem">🦵 Posição procurada</div>
+    <div class="posicoes-grid" id="posicoes-filtro">
+      <button class="pos-btn" onclick="togglePos(this)">Goleiro</button>
+      <button class="pos-btn" onclick="togglePos(this)">Zagueiro</button>
+      <button class="pos-btn" onclick="togglePos(this)">Lateral</button>
+      <button class="pos-btn" onclick="togglePos(this)">Volante</button>
+      <button class="pos-btn" onclick="togglePos(this)">Meia</button>
+      <button class="pos-btn" onclick="togglePos(this)">Ponta</button>
+      <button class="pos-btn" onclick="togglePos(this)">Centroavante</button>
+      <button class="pos-btn" onclick="togglePos(this)">Qualquer</button>
+    </div>
+
+    <div class="filter-actions">
+      <button class="btn-limpar" onclick="limparFiltros()">Limpar</button>
+      <button class="btn-buscar" onclick="buscar()">🔍 Buscar Partidas</button>
+    </div>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="campo-divider">
+  <div class="campo-line"></div>
+  <div class="campo-center">Partidas disponíveis</div>
+  <div class="campo-line"></div>
+</div>
+
+<!-- TABS + CARDS -->
+<section class="tabs-section">
+  <div class="tabs">
+    <button class="tab active" onclick="mudarTab(this,'todos')">Todos</button>
+    <button class="tab" onclick="mudarTab(this,'hoje')">Hoje</button>
+    <button class="tab" onclick="mudarTab(this,'semana')">Esta semana</button>
+    <button class="tab" onclick="mudarTab(this,'urgente')">Urgentes</button>
+  </div>
+
+  <div class="result-info">
+    <span class="result-count"><strong id="total-count">8</strong> partidas encontradas</span>
+    <select class="sort-select" onchange="ordenar(this.value)">
+      <option value="data">Mais próximas</option>
+      <option value="vagas">Mais vagas</option>
+      <option value="nivel">Por nível</option>
+    </select>
+  </div>
+
+  <div class="cards-list" id="cards-container"></div>
+</section>
+
+<!-- MODAL ANUNCIAR -->
+<div class="modal-overlay" id="modal-anunciar">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">⚽ Anunciar Racha</div>
+      <button class="modal-close" onclick="fecharModal('modal-anunciar')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Nome do jogo / apelido</label>
+        <input type="text" id="an-nome" placeholder="Ex: Racha da Praça da Sé">
+      </div>
+      <div class="form-group">
+        <label>Cidade</label>
+        <select id="an-cidade">
+          <option>São Paulo - SP</option>
+          <option>Campinas - SP</option>
+          <option selected>Piracicaba - SP</option>
+          <option>Ribeirão Preto - SP</option>
+          <option>Rio de Janeiro - RJ</option>
+          <option>Belo Horizonte - MG</option>
+          <option>Curitiba - PR</option>
+          <option>Porto Alegre - RS</option>
+          <option>Brasília - DF</option>
+          <option>Salvador - BA</option>
+          <option>Fortaleza - CE</option>
+          <option>Recife - PE</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Nível</label>
+        <select id="an-nivel">
+          <option>Básico</option>
+          <option>Intermediário</option>
+          <option>Avançado</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Local / endereço</label>
+        <input type="text" id="an-local" placeholder="Ex: Campo do Parque do Povo, Av. Beira Rio">
+      </div>
+      <div class="form-group">
+        <label>Data</label>
+        <input type="date" id="an-data">
+      </div>
+      <div class="form-group">
+        <label>Horário</label>
+        <input type="time" id="an-hora">
+      </div>
+      <div class="form-group">
+        <label>Tipo de jogo</label>
+        <select id="an-tipo">
+          <option>Society</option>
+          <option>Futsal</option>
+          <option>Campo</option>
+          <option>Pelada aberta</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Vagas disponíveis</label>
+        <input type="number" id="an-vagas" min="1" max="22" value="3" placeholder="3">
+      </div>
+      <div class="form-group full">
+        <label>Posições que precisam</label>
+        <div class="posicoes-form" id="posicoes-form">
+          <button class="pos-form-btn" onclick="togglePosForm(this)">Goleiro</button>
+          <button class="pos-form-btn" onclick="togglePosForm(this)">Zagueiro</button>
+          <button class="pos-form-btn" onclick="togglePosForm(this)">Lateral</button>
+          <button class="pos-form-btn" onclick="togglePosForm(this)">Volante</button>
+          <button class="pos-form-btn" onclick="togglePosForm(this)">Meia</button>
+          <button class="pos-form-btn" onclick="togglePosForm(this)">Ponta</button>
+          <button class="pos-form-btn" onclick="togglePosForm(this)">Centroavante</button>
+          <button class="pos-form-btn" onclick="togglePosForm(this)">Qualquer</button>
+        </div>
+      </div>
+      <div class="form-group full">
+        <label>Descrição / observações</label>
+        <textarea id="an-desc" rows="3" placeholder="Ex: Todo sábado! Trazemos bola, só falta você. Racha descontraído, mas precisa de compromisso."></textarea>
+      </div>
+    </div>
+    <button class="btn-publicar" onclick="publicarJogo()">🚀 Publicar Racha</button>
+  </div>
+</div>
+
+<!-- MODAL DETALHE -->
+<div class="modal-overlay" id="modal-detalhe">
+  <div class="modal">
+    <div class="modal-header" style="margin-bottom:0">
+      <div></div>
+      <button class="modal-close" onclick="fecharModal('modal-detalhe')">✕</button>
+    </div>
+    <div id="modal-detalhe-body"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===================== DATA =====================
+const hoje = new Date();
+function dataFormatada(diasAFrente, hora) {
+  const d = new Date(hoje);
+  d.setDate(d.getDate() + diasAFrente);
+  return { obj: d, str: d.toISOString().split('T')[0], hora };
+}
+
+let jogos = [
+  {
+    id: 1,
+    nome: "Racha da Sé",
+    cidade: "São Paulo - SP",
+    local: "Campo Sintético do Anhangabaú",
+    data: dataFormatada(0, "19:00"),
+    nivel: "Intermediário",
+    tipo: "Society",
+    vagas: 3,
+    totalVagas: 14,
+    posicoes: ["Meia", "Ponta", "Centroavante"],
+    desc: "Racha semanal firme! Galera comprometida, jogo limpo. Trazemos bola e coletes.",
+    urgente: false,
+    contato: "(11) 9 9876-5432"
+  },
+  {
+    id: 2,
+    nome: "Pelada Beira Rio",
+    cidade: "Piracicaba - SP",
+    local: "Campo do Parque do Povo, Av. Beira Rio",
+    data: dataFormatada(0, "07:30"),
+    nivel: "Básico",
+    tipo: "Pelada aberta",
+    vagas: 5,
+    totalVagas: 22,
+    posicoes: ["Goleiro", "Zagueiro", "Qualquer"],
+    desc: "Pelada aberta todo sábado de manhã. Nível tranquilo, pessoal descontraído. Aparece que tem vaga!",
+    urgente: true,
+    contato: "(19) 9 9123-4567"
+  },
+  {
+    id: 3,
+    nome: "Copa Jardim America",
+    cidade: "Campinas - SP",
+    local: "Arena Campos — Rua Barão de Itapura",
+    data: dataFormatada(1, "20:00"),
+    nivel: "Avançado",
+    tipo: "Society",
+    vagas: 1,
+    totalVagas: 14,
+    posicoes: ["Goleiro"],
+    desc: "Falta 1 goleiro para a rodada de amanhã. Pessoal joga sério, mas clima é ótimo. Só não pode falhar.",
+    urgente: true,
+    contato: "(19) 9 8765-4321"
+  },
+  {
+    id: 4,
+    nome: "Racha da Vila",
+    cidade: "São Paulo - SP",
+    local: "Campo Sintético Vila Madalena",
+    data: dataFormatada(2, "18:00"),
+    nivel: "Intermediário",
+    tipo: "Futsal",
+    vagas: 4,
+    totalVagas: 10,
+    posicoes: ["Lateral", "Volante", "Meia"],
+    desc: "Racha de futsal nível intermediário. Pessoal unido, jogo técnico. Bem-vindo quem gosta de dar bola.",
+    urgente: false,
+    contato: "(11) 9 7654-3210"
+  },
+  {
+    id: 5,
+    nome: "Guerreiros do Sul",
+    cidade: "Porto Alegre - RS",
+    local: "Campo do Menino Deus — Rua Cel. Genuíno",
+    data: dataFormatada(3, "09:00"),
+    nivel: "Básico",
+    tipo: "Campo",
+    vagas: 8,
+    totalVagas: 22,
+    posicoes: ["Zagueiro", "Lateral", "Volante", "Centroavante"],
+    desc: "Partida no campo de grama natural! Domingão clássico com galera boa. Muitas vagas ainda.",
+    urgente: false,
+    contato: "(51) 9 9876-1234"
+  },
+  {
+    id: 6,
+    nome: "Fut Noturno Lapa",
+    cidade: "São Paulo - SP",
+    local: "Arena FutNight Lapa — R. Catão",
+    data: dataFormatada(4, "22:00"),
+    nivel: "Intermediário",
+    tipo: "Society",
+    vagas: 0,
+    totalVagas: 14,
+    posicoes: [],
+    desc: "Partida noturna tradicional. Vagas esgotadas, mas cadastra-se na lista de espera!",
+    urgente: false,
+    contato: "(11) 9 5432-1098"
+  },
+  {
+    id: 7,
+    nome: "Racha da Praça",
+    cidade: "Ribeirão Preto - SP",
+    local: "Campo da Praça do Coração — Centro",
+    data: dataFormatada(5, "16:00"),
+    nivel: "Básico",
+    tipo: "Pelada aberta",
+    vagas: 6,
+    totalVagas: 22,
+    posicoes: ["Qualquer"],
+    desc: "Clássico da cidade! Já tem 10 anos de racha. Todo mundo joga. Traz sua chuteira e boa vontade.",
+    urgente: false,
+    contato: "(16) 9 8765-5678"
+  },
+  {
+    id: 8,
+    nome: "Elite FC Futsal",
+    cidade: "Belo Horizonte - MG",
+    local: "CT Elite Sports — Savassi",
+    data: dataFormatada(6, "20:30"),
+    nivel: "Avançado",
+    tipo: "Futsal",
+    vagas: 2,
+    totalVagas: 10,
+    posicoes: ["Ponta", "Fixo"],
+    desc: "Futsal de alto nível, galera ex-federação. Só pra quem joga mesmo. Jogo limpo e rápido.",
+    urgente: false,
+    contato: "(31) 9 9999-8888"
+  }
+];
+
+let tabAtual = 'todos';
+let jogosFiltrados = [...jogos];
+
+// ===================== RENDER =====================
+function renderCards(lista) {
+  const container = document.getElementById('cards-container');
+  document.getElementById('total-count').textContent = lista.length;
+
+  if (lista.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-ball">⚽</div>
+        <h3>Nenhuma partida encontrada.<br>Que tal anunciar o seu racha?</h3>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = lista.map((j, i) => {
+    const cheio = j.vagas === 0;
+    const nivel = j.nivel.toLowerCase();
+    const tagNivel = `tag-nivel-${nivel === 'básico' ? 'basico' : nivel === 'intermediário' ? 'intermediario' : 'avancado'}`;
+    const posStr = j.posicoes.length ? j.posicoes.slice(0,2).join(', ') + (j.posicoes.length > 2 ? '...' : '') : '';
+
+    return `
+    <div class="jogo-card ${j.urgente ? 'urgente' : ''} ${cheio ? 'cheio' : ''}"
+         style="animation-delay:${i*0.05}s"
+         onclick="abrirDetalhe(${j.id})">
+      ${j.urgente ? '<span class="badge-urgente">urgente</span>' : ''}
+      <div class="card-data">
+        <div class="card-dia">${j.data.obj.getDate().toString().padStart(2,'0')}</div>
+        <div class="card-mes">${j.data.obj.toLocaleString('pt-BR',{month:'short'}).replace('.','')}</div>
+        <div class="card-hora">${j.data.hora}</div>
+      </div>
+      <div class="card-info">
+        <div class="card-titulo">${j.nome}</div>
+        <div class="card-local">📍 ${j.local} &bull; ${j.cidade}</div>
+        <div class="card-tags">
+          <span class="tag ${tagNivel}">${j.nivel}</span>
+          <span class="tag tag-tipo">${j.tipo}</span>
+          ${posStr ? `<span class="tag tag-pos">🦵 ${posStr}</span>` : ''}
+        </div>
+      </div>
+      <div class="card-vagas">
+        <div class="vagas-num" style="${cheio ? 'color:var(--texto-muted)' : ''}">
+          ${cheio ? '—' : j.vagas}
+        </div>
+        <div class="vagas-label">${cheio ? 'Lotado' : 'vagas'}</div>
+        <button class="btn-entrar ${cheio ? 'cheio-btn' : ''}" onclick="event.stopPropagation(); ${cheio ? '' : `abrirDetalhe(${j.id})`}">
+          ${cheio ? 'Lotado' : 'Entrar'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===================== FILTROS =====================
+function buscar() {
+  const cidade = document.getElementById('f-cidade').value;
+  const data = document.getElementById('f-data').value;
+  const horario = document.getElementById('f-horario').value;
+  const nivel = document.getElementById('f-nivel').value;
+  const posSelected = [...document.querySelectorAll('#posicoes-filtro .pos-btn.selected')].map(b => b.textContent);
+
+  jogosFiltrados = jogos.filter(j => {
+    if (cidade && j.cidade !== cidade) return false;
+    if (data && j.data.str !== data) return false;
+    if (nivel && j.nivel !== nivel) return false;
+    if (horario) {
+      const h = parseInt(j.data.hora);
+      if (horario === 'Manhã (até 12h)' && h >= 12) return false;
+      if (horario === 'Tarde (12h–18h)' && (h < 12 || h >= 18)) return false;
+      if (horario === 'Noite (após 18h)' && h < 18) return false;
+    }
+    if (posSelected.length > 0 && !posSelected.includes('Qualquer')) {
+      const temPos = posSelected.some(p => j.posicoes.includes(p) || j.posicoes.includes('Qualquer'));
+      if (!temPos) return false;
+    }
+    return true;
+  });
+
+  aplicarTab();
+  mostrarToast(`${jogosFiltrados.length} partida(s) encontrada(s)!`);
+}
+
+function aplicarTab() {
+  let lista = [...jogosFiltrados];
+  const agora = new Date();
+  const fim = new Date(); fim.setDate(fim.getDate() + 7);
+
+  if (tabAtual === 'hoje') {
+    lista = lista.filter(j => j.data.str === hoje.toISOString().split('T')[0]);
+  } else if (tabAtual === 'semana') {
+    lista = lista.filter(j => j.data.obj <= fim);
+  } else if (tabAtual === 'urgente') {
+    lista = lista.filter(j => j.urgente || j.vagas <= 2);
+  }
+
+  renderCards(lista);
+}
+
+function limparFiltros() {
+  document.getElementById('f-cidade').value = '';
+  document.getElementById('f-data').value = '';
+  document.getElementById('f-horario').value = '';
+  document.getElementById('f-nivel').value = '';
+  document.querySelectorAll('#posicoes-filtro .pos-btn').forEach(b => b.classList.remove('selected'));
+  jogosFiltrados = [...jogos];
+  aplicarTab();
+}
+
+function togglePos(btn) {
+  btn.classList.toggle('selected');
+}
+
+function togglePosForm(btn) {
+  btn.classList.toggle('selected');
+}
+
+function mudarTab(btn, tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  tabAtual = tab;
+  aplicarTab();
+}
+
+function mudarAba(aba) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  if (aba === 'meus') {
+    const meus = jogos.filter(j => j._meu);
+    if (meus.length === 0) {
+      mostrarToast('Você ainda não anunciou nenhum racha!');
+    } else {
+      renderCards(meus);
+    }
+  } else {
+    aplicarTab();
+  }
+}
+
+function ordenar(criterio) {
+  if (criterio === 'data') jogosFiltrados.sort((a,b) => a.data.obj - b.data.obj);
+  if (criterio === 'vagas') jogosFiltrados.sort((a,b) => b.vagas - a.vagas);
+  if (criterio === 'nivel') {
+    const ordem = {'Básico':0,'Intermediário':1,'Avançado':2};
+    jogosFiltrados.sort((a,b) => ordem[a.nivel] - ordem[b.nivel]);
+  }
+  aplicarTab();
+}
+
+// ===================== MODAL ANUNCIAR =====================
+function abrirModalAnunciar() {
+  document.getElementById('modal-anunciar').classList.add('open');
+  const inp = document.getElementById('an-data');
+  inp.value = hoje.toISOString().split('T')[0];
+}
+
+function publicarJogo() {
+  const nome = document.getElementById('an-nome').value.trim();
+  const cidade = document.getElementById('an-cidade').value;
+  const local = document.getElementById('an-local').value.trim();
+  const dataVal = document.getElementById('an-data').value;
+  const hora = document.getElementById('an-hora').value;
+  const tipo = document.getElementById('an-tipo').value;
+  const nivel = document.getElementById('an-nivel').value;
+  const vagas = parseInt(document.getElementById('an-vagas').value) || 3;
+  const desc = document.getElementById('an-desc').value.trim();
+  const posicoes = [...document.querySelectorAll('#posicoes-form .pos-form-btn.selected')].map(b => b.textContent);
+
+  if (!nome || !local || !dataVal || !hora) {
+    mostrarToast('Preencha todos os campos obrigatórios!', true);
+    return;
+  }
+
+  const novoJogo = {
+    id: Date.now(),
+    nome, cidade, local,
+    data: { obj: new Date(dataVal + 'T' + hora), str: dataVal, hora },
+    nivel, tipo,
+    vagas, totalVagas: vagas + 11,
+    posicoes: posicoes.length ? posicoes : ['Qualquer'],
+    desc: desc || 'Venha jogar conosco!',
+    urgente: false,
+    contato: 'Direto no app',
+    _meu: true
+  };
+
+  jogos.unshift(novoJogo);
+  jogosFiltrados = [...jogos];
+  fecharModal('modal-anunciar');
+  aplicarTab();
+  mostrarToast('🚀 Racha publicado com sucesso!');
+
+  // reset form
+  document.getElementById('an-nome').value = '';
+  document.getElementById('an-local').value = '';
+  document.getElementById('an-hora').value = '';
+  document.getElementById('an-desc').value = '';
+  document.getElementById('an-vagas').value = '3';
+  document.querySelectorAll('#posicoes-form .pos-form-btn').forEach(b => b.classList.remove('selected'));
+}
+
+// ===================== MODAL DETALHE =====================
+function abrirDetalhe(id) {
+  const j = jogos.find(x => x.id === id);
+  if (!j) return;
+
+  const cheio = j.vagas === 0;
+  const nivel = j.nivel.toLowerCase();
+  const tagNivel = `tag-nivel-${nivel === 'básico' ? 'basico' : nivel === 'intermediário' ? 'intermediario' : 'avancado'}`;
+  const diaSemana = j.data.obj.toLocaleString('pt-BR', {weekday:'long'});
+  const dataFull = j.data.obj.toLocaleString('pt-BR', {day:'2-digit',month:'long',year:'numeric'});
+
+  document.getElementById('modal-detalhe-body').innerHTML = `
+    <div class="detalhe-header">
+      <div class="card-tags" style="margin-bottom:0.7rem">
+        <span class="tag ${tagNivel}">${j.nivel}</span>
+        <span class="tag tag-tipo">${j.tipo}</span>
+        ${j.urgente ? '<span class="tag" style="color:var(--laranja);border-color:rgba(255,107,0,.3);background:rgba(255,107,0,.08)">Urgente</span>' : ''}
+      </div>
+      <div class="detalhe-nome">${j.nome}</div>
+      <div class="detalhe-local">📍 ${j.local} &bull; ${j.cidade}</div>
+    </div>
+
+    <div class="detalhe-grid">
+      <div class="detalhe-item">
+        <div class="detalhe-item-val">${j.data.hora}</div>
+        <div class="detalhe-item-key">Horário</div>
+      </div>
+      <div class="detalhe-item">
+        <div class="detalhe-item-val" style="${cheio?'color:var(--texto-muted)':''}">${cheio ? '—' : j.vagas}</div>
+        <div class="detalhe-item-key">${cheio ? 'Lotado' : 'Vagas'}</div>
+      </div>
+      <div class="detalhe-item">
+        <div class="detalhe-item-val">${j.totalVagas}</div>
+        <div class="detalhe-item-key">Total jogadores</div>
+      </div>
+    </div>
+
+    <div class="detalhe-descricao">
+      📅 <strong>${diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1)}, ${dataFull}</strong><br><br>
+      ${j.desc}
+    </div>
+
+    <div class="detalhe-posicoes">
+      <h4>Posições procuradas</h4>
+      <div class="posicoes-grid">
+        ${j.posicoes.map(p => `<button class="pos-btn selected" style="pointer-events:none">${p}</button>`).join('')}
+      </div>
+    </div>
+
+    <div style="background:var(--cinza-medio);border:1px solid var(--cinza-borda);border-radius:10px;padding:0.8rem 1rem;margin-bottom:1.2rem;font-size:0.85rem">
+      📱 <strong>Contato:</strong> ${j.contato}
+    </div>
+
+    ${cheio
+      ? `<button class="btn-confirmar" style="background:var(--cinza-borda);color:var(--texto-muted);cursor:not-allowed">Vagas Esgotadas</button>`
+      : `<button class="btn-confirmar" onclick="confirmarEntrada(${j.id})">✅ Quero Jogar!</button>`
+    }
+  `;
+
+  document.getElementById('modal-detalhe').classList.add('open');
+}
+
+function confirmarEntrada(id) {
+  const j = jogos.find(x => x.id === id);
+  if (j && j.vagas > 0) {
+    j.vagas--;
+    fecharModal('modal-detalhe');
+    aplicarTab();
+    mostrarToast('⚽ Você entrou no racha! Boa pelada!');
+  }
+}
+
+// ===================== UTILS =====================
+function fecharModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+});
+
+function mostrarToast(msg, erro) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = erro ? '#ff4444' : 'var(--verde)';
+  t.style.color = erro ? '#fff' : 'var(--preto)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ===================== INIT =====================
+document.getElementById('f-data').min = hoje.toISOString().split('T')[0];
+jogosFiltrados = [...jogos];
+aplicarTab();
+</script>
+</body>
+</html>
