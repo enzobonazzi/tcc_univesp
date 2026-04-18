@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BoleirApp — Acha Racha</title>
+<title>Resenha Futebol — Acha Racha</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -29,7 +29,6 @@
     overflow-x: hidden;
   }
 
-  /* CAMPO TEXTURE BG */
   body::before {
     content: '';
     position: fixed;
@@ -41,7 +40,6 @@
     z-index: 0;
   }
 
-  /* HEADER */
   header {
     position: sticky;
     top: 0;
@@ -54,6 +52,7 @@
     align-items: center;
     justify-content: space-between;
     height: 64px;
+    gap: 1rem;
   }
 
   .logo {
@@ -64,15 +63,11 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
+    white-space: nowrap;
   }
 
   .logo span { color: var(--branco); }
-
-  .logo-ball {
-    width: 28px;
-    height: 28px;
-    display: inline-flex;
-  }
+  .logo-ball { width: 28px; height: 28px; display: inline-flex; flex-shrink: 0; }
 
   nav { display: flex; gap: 0.5rem; }
 
@@ -87,10 +82,59 @@
     border-radius: 999px;
     cursor: pointer;
     transition: all 0.2s;
+    white-space: nowrap;
   }
 
   .nav-btn:hover { color: var(--branco); border-color: var(--cinza-borda); }
   .nav-btn.active { background: var(--verde); color: var(--preto); border-color: var(--verde); font-weight: 600; }
+
+  .header-right { display: flex; align-items: center; gap: 0.6rem; }
+
+  .lang-selector {
+    display: flex;
+    gap: 0.25rem;
+    background: var(--cinza-medio);
+    border: 1px solid var(--cinza-borda);
+    border-radius: 999px;
+    padding: 3px;
+    position: relative;
+  }
+
+  .lang-btn {
+    background: none;
+    border: none;
+    color: var(--texto-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.18s;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .lang-btn:hover { color: var(--branco); }
+  .lang-btn.active { background: var(--verde); color: var(--preto); }
+  .lang-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .lang-spinner {
+    width: 10px;
+    height: 10px;
+    border: 2px solid rgba(0,0,0,0.3);
+    border-top-color: var(--preto);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    display: none;
+  }
+
+  .lang-btn.loading .lang-spinner { display: inline-block; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   .btn-anunciar {
     background: var(--verde);
@@ -104,6 +148,7 @@
     cursor: pointer;
     transition: all 0.2s;
     letter-spacing: 0.3px;
+    white-space: nowrap;
   }
 
   .btn-anunciar:hover { background: #00E060; transform: scale(1.02); }
@@ -139,11 +184,7 @@
     animation: fadeInUp 0.7s 0.1s ease both;
   }
 
-  .hero h1 em {
-    font-style: normal;
-    color: var(--verde);
-    position: relative;
-  }
+  .hero h1 em { font-style: normal; color: var(--verde); }
 
   .hero p {
     color: var(--texto-muted);
@@ -152,7 +193,6 @@
     animation: fadeInUp 0.7s 0.2s ease both;
   }
 
-  /* STATS BAR */
   .stats-bar {
     position: relative;
     z-index: 1;
@@ -164,15 +204,9 @@
   }
 
   .stat { text-align: center; }
-  .stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.2rem;
-    color: var(--verde);
-    line-height: 1;
-  }
+  .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: var(--verde); line-height: 1; }
   .stat-label { font-size: 0.75rem; color: var(--texto-muted); text-transform: uppercase; letter-spacing: 1px; }
 
-  /* FILTROS */
   .filter-section {
     position: relative;
     z-index: 1;
@@ -232,10 +266,7 @@
   }
 
   .filter-group select:focus,
-  .filter-group input:focus {
-    border-color: var(--verde);
-  }
-
+  .filter-group input:focus { border-color: var(--verde); }
   .filter-group select option { background: #1E1E1E; }
 
   .posicoes-grid {
@@ -263,11 +294,7 @@
   .pos-btn:hover { border-color: var(--verde); color: var(--verde); }
   .pos-btn.selected { background: var(--verde); border-color: var(--verde); color: var(--preto); }
 
-  .filter-actions {
-    display: flex;
-    gap: 0.8rem;
-    justify-content: flex-end;
-  }
+  .filter-actions { display: flex; gap: 0.8rem; justify-content: flex-end; }
 
   .btn-limpar {
     background: none;
@@ -294,12 +321,10 @@
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s;
-    letter-spacing: 0.3px;
   }
 
   .btn-buscar:hover { background: #00E060; }
 
-  /* TABS */
   .tabs-section {
     position: relative;
     z-index: 1;
@@ -332,7 +357,6 @@
   .tab.active { color: var(--verde); border-bottom-color: var(--verde); font-weight: 600; }
   .tab:hover:not(.active) { color: var(--branco); }
 
-  /* RESULTADO COUNT */
   .result-info {
     display: flex;
     justify-content: space-between;
@@ -356,7 +380,6 @@
     cursor: pointer;
   }
 
-  /* CARDS */
   .cards-list {
     display: flex;
     flex-direction: column;
@@ -383,9 +406,7 @@
   .jogo-card::before {
     content: '';
     position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
+    left: 0; top: 0; bottom: 0;
     width: 3px;
     background: var(--verde);
     border-radius: 3px 0 0 3px;
@@ -402,60 +423,15 @@
 
   .jogo-card.cheio:hover { border-color: var(--cinza-borda); transform: none; box-shadow: none; }
 
-  /* Data/hora coluna */
-  .card-data {
-    text-align: center;
-    min-width: 72px;
-  }
+  .card-data { text-align: center; min-width: 72px; }
+  .card-dia { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; line-height: 1; color: var(--verde); }
+  .card-mes { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--texto-muted); }
+  .card-hora { font-size: 0.85rem; font-weight: 600; color: var(--branco); margin-top: 0.3rem; }
 
-  .card-dia {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.2rem;
-    line-height: 1;
-    color: var(--verde);
-  }
-
-  .card-mes {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--texto-muted);
-  }
-
-  .card-hora {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--branco);
-    margin-top: 0.3rem;
-  }
-
-  /* Info coluna */
   .card-info { min-width: 0; }
-
-  .card-titulo {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--branco);
-    margin-bottom: 0.3rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .card-local {
-    font-size: 0.82rem;
-    color: var(--texto-muted);
-    margin-bottom: 0.6rem;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-  }
-
-  .card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
+  .card-titulo { font-size: 1rem; font-weight: 600; color: var(--branco); margin-bottom: 0.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-local { font-size: 0.82rem; color: var(--texto-muted); margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.3rem; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
   .tag {
     font-size: 0.7rem;
@@ -473,22 +449,9 @@
   .tag-tipo { color: var(--verde); border-color: rgba(0,200,83,0.3); background: rgba(0,200,83,0.08); }
   .tag-pos { color: #CE93D8; border-color: rgba(206,147,216,0.3); background: rgba(206,147,216,0.08); }
 
-  /* Vagas coluna */
   .card-vagas { text-align: right; }
-
-  .vagas-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem;
-    line-height: 1;
-    color: var(--verde);
-  }
-
-  .vagas-label {
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--texto-muted);
-  }
+  .vagas-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; line-height: 1; color: var(--verde); }
+  .vagas-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--texto-muted); }
 
   .btn-entrar {
     display: block;
@@ -509,28 +472,21 @@
   }
 
   .btn-entrar:hover { background: #00E060; }
-
-  .btn-entrar.cheio-btn {
-    background: var(--cinza-borda);
-    color: var(--texto-muted);
-    cursor: not-allowed;
-  }
+  .btn-entrar.cheio-btn { background: var(--cinza-borda); color: var(--texto-muted); cursor: not-allowed; }
 
   .badge-urgente {
     position: absolute;
-    top: 0.5rem;
-    left: 0.8rem;
+    top: 0.5rem; left: 0.8rem;
     background: var(--laranja);
     color: white;
     font-size: 0.55rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    padding: 0.1rem 0.2rem;
+    padding: 0.1rem 0.4rem;
     border-radius: 999px;
   }
 
-  /* MODAL ANUNCIAR */
   .modal-overlay {
     display: none;
     position: fixed;
@@ -579,8 +535,7 @@
     background: var(--cinza-medio);
     border: 1px solid var(--cinza-borda);
     color: var(--texto-muted);
-    width: 36px;
-    height: 36px;
+    width: 36px; height: 36px;
     border-radius: 50%;
     font-size: 1.1rem;
     cursor: pointer;
@@ -592,12 +547,7 @@
 
   .modal-close:hover { color: var(--branco); border-color: var(--branco); }
 
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
   .form-group.full { grid-column: 1 / -1; }
 
@@ -627,14 +577,9 @@
   .form-group input:focus,
   .form-group select:focus,
   .form-group textarea:focus { border-color: var(--verde); }
-
   .form-group select option { background: #1e1e1e; }
 
-  .posicoes-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
+  .posicoes-form { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
   .pos-form-btn {
     background: var(--cinza-medio);
@@ -665,13 +610,9 @@
     cursor: pointer;
     margin-top: 1.5rem;
     transition: all 0.2s;
-    letter-spacing: 0.3px;
   }
 
   .btn-publicar:hover { background: #00E060; }
-
-  /* MODAL DETALHE */
-  .modal-detalhe-body { padding: 0; }
 
   .detalhe-header {
     background: linear-gradient(135deg, var(--verde-escuro), #004d20);
@@ -698,19 +639,8 @@
     text-align: center;
   }
 
-  .detalhe-item-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.5rem;
-    color: var(--verde);
-  }
-
-  .detalhe-item-key {
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--texto-muted);
-    margin-top: 0.2rem;
-  }
+  .detalhe-item-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--verde); }
+  .detalhe-item-key { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--texto-muted); margin-top: 0.2rem; }
 
   .detalhe-descricao {
     background: var(--cinza-medio);
@@ -722,10 +652,7 @@
     margin-bottom: 1.5rem;
   }
 
-  .detalhe-posicoes {
-    margin-bottom: 1.5rem;
-  }
-
+  .detalhe-posicoes { margin-bottom: 1.5rem; }
   .detalhe-posicoes h4 {
     font-size: 0.72rem;
     text-transform: uppercase;
@@ -751,7 +678,36 @@
 
   .btn-confirmar:hover { background: #00E060; }
 
-  /* TOAST */
+  /* OVERLAY DE TRADUÇÃO */
+  .translate-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,10,10,0.7);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+    backdrop-filter: blur(4px);
+  }
+
+  .translate-overlay.show { display: flex; }
+
+  .translate-spinner {
+    width: 48px; height: 48px;
+    border: 3px solid rgba(0,200,83,0.2);
+    border-top-color: var(--verde);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .translate-msg {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--texto-muted);
+  }
+
   .toast {
     position: fixed;
     bottom: 2rem;
@@ -771,17 +727,8 @@
 
   .toast.show { transform: translateX(-50%) translateY(0); }
 
-  /* VAZIO */
-  .empty-state {
-    text-align: center;
-    padding: 4rem 2rem;
-  }
-
-  .empty-ball {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    animation: bounce 1.5s ease infinite;
-  }
+  .empty-state { text-align: center; padding: 4rem 2rem; }
+  .empty-ball { font-size: 4rem; margin-bottom: 1rem; animation: bounce 1.5s ease infinite; }
 
   @keyframes bounce {
     0%, 100% { transform: translateY(0); }
@@ -790,7 +737,6 @@
 
   .empty-state h3 { font-size: 1.2rem; color: var(--texto-muted); font-weight: 400; }
 
-  /* ANIMATIONS */
   @keyframes fadeInDown {
     from { opacity: 0; transform: translateY(-15px); }
     to { opacity: 1; transform: none; }
@@ -801,7 +747,6 @@
     to { opacity: 1; transform: none; }
   }
 
-  /* CAMPO VISUAL */
   .campo-divider {
     position: relative;
     z-index: 1;
@@ -813,12 +758,7 @@
     margin: 0 auto;
   }
 
-  .campo-line {
-    flex: 1;
-    height: 1px;
-    background: var(--cinza-borda);
-  }
-
+  .campo-line { flex: 1; height: 1px; background: var(--cinza-borda); }
   .campo-center {
     font-size: 0.72rem;
     text-transform: uppercase;
@@ -828,7 +768,6 @@
     font-weight: 600;
   }
 
-  /* RESPONSIVE */
   @media (max-width: 600px) {
     header { padding: 0 1rem; }
     nav { display: none; }
@@ -840,10 +779,8 @@
     .card-vagas { display: none; }
     .form-grid { grid-template-columns: 1fr; }
     .detalhe-grid { grid-template-columns: repeat(2, 1fr); }
-    .btn-anunciar span { display: none; }
   }
 
-  /* SCROLLBAR */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: var(--preto); }
   ::-webkit-scrollbar-thumb { background: var(--cinza-borda); border-radius: 3px; }
@@ -851,7 +788,6 @@
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <div class="logo">
     <svg class="logo-ball" viewBox="0 0 28 28" fill="none">
@@ -861,51 +797,53 @@
       <path d="M8 10 L5 14 L8 18 L10 14 Z" fill="#007A33" opacity="0.8"/>
       <path d="M14 23 L11 18 L14 18 L17 18 Z" fill="#007A33" opacity="0.8"/>
     </svg>
-    Boleiro<span>App</span>
+    Resenha<span>Futebol</span>
   </div>
 
   <nav>
-    <button class="nav-btn active" onclick="mudarAba('partidas')">🔍 Buscar Racha</button>
-    <button class="nav-btn" onclick="mudarAba('meus')">⚽ Meus Jogos</button>
+    <button class="nav-btn active" onclick="mudarAba('partidas')" data-i18n="nav_buscar">🔍 Buscar Racha</button>
+    <button class="nav-btn" onclick="mudarAba('meus')" data-i18n="nav_meus">⚽ Meus Jogos</button>
   </nav>
 
-  <button class="btn-anunciar" onclick="abrirModalAnunciar()">
-    + <span>Anunciar Racha</span>
-  </button>
+  <div class="header-right">
+    <div class="lang-selector">
+      <button class="lang-btn active" onclick="setLang('pt')">PT</button>
+      <button class="lang-btn" onclick="setLang('en')">EN <span class="lang-spinner"></span></button>
+      <button class="lang-btn" onclick="setLang('es')">ES <span class="lang-spinner"></span></button>
+    </div>
+    <button class="btn-anunciar" onclick="abrirModalAnunciar()" data-i18n="btn_anunciar">+ Anunciar Racha</button>
+  </div>
 </header>
 
-<!-- HERO -->
 <section class="hero">
-  <div class="hero-tag">⚽ A maior rede de rachão do Brasil</div>
-  <h1>Acha<br><em>Racha</em></h1>
-  <p>Filtra por cidade, dia, horário e posição — e entra no jogo.</p>
+  <div class="hero-tag" data-i18n="hero_tag">⚽ A maior rede de racha do Brasil</div>
+  <h1><span data-i18n="hero_h1_linha1">Procurou</span><br><em data-i18n="hero_h1_linha2">Achou</em></h1>
+  <p data-i18n="hero_p">Filtra por cidade, dia, horário e posição — e entra no jogo.</p>
 </section>
 
-<!-- STATS -->
 <div class="stats-bar">
   <div class="stat">
-    <div class="stat-num" id="stat-jogos">247</div>
-    <div class="stat-label">Jogos hoje</div>
+    <div class="stat-num">247</div>
+    <div class="stat-label" data-i18n="stat_jogos">Jogos hoje</div>
   </div>
   <div class="stat">
     <div class="stat-num">1.843</div>
-    <div class="stat-label">Boleiros ativos</div>
+    <div class="stat-label" data-i18n="stat_boleiros">Boleiros ativos</div>
   </div>
   <div class="stat">
     <div class="stat-num">89</div>
-    <div class="stat-label">Cidades</div>
+    <div class="stat-label" data-i18n="stat_cidades">Cidades</div>
   </div>
 </div>
 
-<!-- FILTROS -->
 <section class="filter-section">
   <div class="filter-card">
-    <div class="filter-title">🎯 Filtrar partidas</div>
+    <div class="filter-title" data-i18n="filter_title">🎯 Filtrar partidas</div>
     <div class="filter-grid">
       <div class="filter-group">
-        <label>Cidade</label>
+        <label data-i18n="label_cidade">Cidade</label>
         <select id="f-cidade">
-          <option value="">Todas as cidades</option>
+          <option value="" data-i18n="opt_todas_cidades">Todas as cidades</option>
           <option>São Paulo - SP</option>
           <option>Campinas - SP</option>
           <option>Piracicaba - SP</option>
@@ -921,70 +859,70 @@
         </select>
       </div>
       <div class="filter-group">
-        <label>Data</label>
+        <label data-i18n="label_data">Data</label>
         <input type="date" id="f-data">
       </div>
       <div class="filter-group">
-        <label>Horário</label>
+        <label data-i18n="label_horario">Horário</label>
         <select id="f-horario">
-          <option value="">Qualquer horário</option>
-          <option>Manhã (até 12h)</option>
-          <option>Tarde (12h–18h)</option>
-          <option>Noite (após 18h)</option>
+          <option value="" data-i18n="opt_qualquer_horario">Qualquer horário</option>
+          <option data-i18n="opt_manha">Manhã (até 12h)</option>
+          <option data-i18n="opt_tarde">Tarde (12h–18h)</option>
+          <option data-i18n="opt_noite">Noite (após 18h)</option>
         </select>
       </div>
       <div class="filter-group">
-        <label>Nível</label>
+        <label data-i18n="label_nivel">Nível</label>
         <select id="f-nivel">
-          <option value="">Todos os níveis</option>
-          <option>Básico</option>
-          <option>Intermediário</option>
-          <option>Avançado</option>
+          <option value="" data-i18n="opt_todos_niveis">Todos os níveis</option>
+          <option data-i18n="nivel_basico">Básico</option>
+          <option data-i18n="nivel_intermediario">Intermediário</option>
+          <option data-i18n="nivel_avancado">Avançado</option>
         </select>
       </div>
     </div>
 
-    <div class="filter-title" style="margin-top:0.5rem">🦵 Posição procurada</div>
+    <div class="filter-title" style="margin-top:0.5rem" data-i18n="filter_pos_title">🦵 Posição procurada</div>
     <div class="posicoes-grid" id="posicoes-filtro">
-      <button class="pos-btn" onclick="togglePos(this)">Goleiro</button>
-      <button class="pos-btn" onclick="togglePos(this)">Zagueiro</button>
-      <button class="pos-btn" onclick="togglePos(this)">Lateral</button>
-      <button class="pos-btn" onclick="togglePos(this)">Volante</button>
-      <button class="pos-btn" onclick="togglePos(this)">Meia</button>
-      <button class="pos-btn" onclick="togglePos(this)">Ponta</button>
-      <button class="pos-btn" onclick="togglePos(this)">Centroavante</button>
-      <button class="pos-btn" onclick="togglePos(this)">Qualquer</button>
+      <button class="pos-btn" onclick="togglePos(this)" data-pos="Goleiro" data-i18n="pos_goleiro">Goleiro</button>
+      <button class="pos-btn" onclick="togglePos(this)" data-pos="Zagueiro" data-i18n="pos_zagueiro">Zagueiro</button>
+      <button class="pos-btn" onclick="togglePos(this)" data-pos="Lateral" data-i18n="pos_lateral">Lateral</button>
+      <button class="pos-btn" onclick="togglePos(this)" data-pos="Volante" data-i18n="pos_volante">Volante</button>
+      <button class="pos-btn" onclick="togglePos(this)" data-pos="Meia" data-i18n="pos_meia">Meia</button>
+      <button class="pos-btn" onclick="togglePos(this)" data-pos="Ponta" data-i18n="pos_ponta">Ponta</button>
+      <button class="pos-btn" onclick="togglePos(this)" data-pos="Centroavante" data-i18n="pos_centroavante">Centroavante</button>
+      <button class="pos-btn" onclick="togglePos(this)" data-pos="Qualquer" data-i18n="pos_qualquer">Qualquer</button>
     </div>
 
     <div class="filter-actions">
-      <button class="btn-limpar" onclick="limparFiltros()">Limpar</button>
-      <button class="btn-buscar" onclick="buscar()">🔍 Buscar Partidas</button>
+      <button class="btn-limpar" onclick="limparFiltros()" data-i18n="btn_limpar">Limpar</button>
+      <button class="btn-buscar" onclick="buscar()" data-i18n="btn_buscar">🔍 Buscar Partidas</button>
     </div>
   </div>
 </section>
 
-<!-- DIVIDER -->
 <div class="campo-divider">
   <div class="campo-line"></div>
-  <div class="campo-center">Partidas disponíveis</div>
+  <div class="campo-center" data-i18n="divider_text">Partidas disponíveis</div>
   <div class="campo-line"></div>
 </div>
 
-<!-- TABS + CARDS -->
 <section class="tabs-section">
   <div class="tabs">
-    <button class="tab active" onclick="mudarTab(this,'todos')">Todos</button>
-    <button class="tab" onclick="mudarTab(this,'hoje')">Hoje</button>
-    <button class="tab" onclick="mudarTab(this,'semana')">Esta semana</button>
-    <button class="tab" onclick="mudarTab(this,'urgente')">Urgentes</button>
+    <button class="tab active" onclick="mudarTab(this,'todos')" data-i18n="tab_todos">Todos</button>
+    <button class="tab" onclick="mudarTab(this,'hoje')" data-i18n="tab_hoje">Hoje</button>
+    <button class="tab" onclick="mudarTab(this,'semana')" data-i18n="tab_semana">Esta semana</button>
+    <button class="tab" onclick="mudarTab(this,'urgente')" data-i18n="tab_urgente">Urgentes</button>
   </div>
 
   <div class="result-info">
-    <span class="result-count"><strong id="total-count">8</strong> partidas encontradas</span>
+    <span class="result-count">
+      <strong id="total-count">8</strong> <span data-i18n="result_label">partidas encontradas</span>
+    </span>
     <select class="sort-select" onchange="ordenar(this.value)">
-      <option value="data">Mais próximas</option>
-      <option value="vagas">Mais vagas</option>
-      <option value="nivel">Por nível</option>
+      <option value="data" data-i18n="sort_data">Mais próximas</option>
+      <option value="vagas" data-i18n="sort_vagas">Mais vagas</option>
+      <option value="nivel" data-i18n="sort_nivel">Por nível</option>
     </select>
   </div>
 
@@ -995,16 +933,16 @@
 <div class="modal-overlay" id="modal-anunciar">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">⚽ Anunciar Racha</div>
+      <div class="modal-title" data-i18n="modal_anunciar_title">⚽ Anunciar Racha</div>
       <button class="modal-close" onclick="fecharModal('modal-anunciar')">✕</button>
     </div>
     <div class="form-grid">
       <div class="form-group full">
-        <label>Nome do jogo / apelido</label>
+        <label data-i18n="form_nome">Nome do jogo / apelido</label>
         <input type="text" id="an-nome" placeholder="Ex: Racha da Praça da Sé">
       </div>
       <div class="form-group">
-        <label>Cidade</label>
+        <label data-i18n="label_cidade">Cidade</label>
         <select id="an-cidade">
           <option>São Paulo - SP</option>
           <option>Campinas - SP</option>
@@ -1021,57 +959,57 @@
         </select>
       </div>
       <div class="form-group">
-        <label>Nível</label>
+        <label data-i18n="label_nivel">Nível</label>
         <select id="an-nivel">
-          <option>Básico</option>
-          <option>Intermediário</option>
-          <option>Avançado</option>
+          <option data-i18n="nivel_basico">Básico</option>
+          <option data-i18n="nivel_intermediario">Intermediário</option>
+          <option data-i18n="nivel_avancado">Avançado</option>
         </select>
       </div>
       <div class="form-group full">
-        <label>Local / endereço</label>
-        <input type="text" id="an-local" placeholder="Ex: Campo do Parque do Povo, Av. Beira Rio">
+        <label data-i18n="form_local">Local / endereço</label>
+        <input type="text" id="an-local" placeholder="Ex: Campo do Parque do Povo">
       </div>
       <div class="form-group">
-        <label>Data</label>
+        <label data-i18n="label_data">Data</label>
         <input type="date" id="an-data">
       </div>
       <div class="form-group">
-        <label>Horário</label>
+        <label data-i18n="label_horario">Horário</label>
         <input type="time" id="an-hora">
       </div>
       <div class="form-group">
-        <label>Tipo de jogo</label>
+        <label data-i18n="form_tipo">Tipo de jogo</label>
         <select id="an-tipo">
           <option>Society</option>
           <option>Futsal</option>
-          <option>Campo</option>
-          <option>Pelada aberta</option>
+          <option data-i18n="tipo_campo">Campo</option>
+          <option data-i18n="tipo_aberta">Pelada aberta</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Vagas disponíveis</label>
-        <input type="number" id="an-vagas" min="1" max="22" value="3" placeholder="3">
+        <label data-i18n="form_vagas">Vagas disponíveis</label>
+        <input type="number" id="an-vagas" min="1" max="22" value="3">
       </div>
       <div class="form-group full">
-        <label>Posições que precisam</label>
+        <label data-i18n="form_posicoes">Posições que precisam</label>
         <div class="posicoes-form" id="posicoes-form">
-          <button class="pos-form-btn" onclick="togglePosForm(this)">Goleiro</button>
-          <button class="pos-form-btn" onclick="togglePosForm(this)">Zagueiro</button>
-          <button class="pos-form-btn" onclick="togglePosForm(this)">Lateral</button>
-          <button class="pos-form-btn" onclick="togglePosForm(this)">Volante</button>
-          <button class="pos-form-btn" onclick="togglePosForm(this)">Meia</button>
-          <button class="pos-form-btn" onclick="togglePosForm(this)">Ponta</button>
-          <button class="pos-form-btn" onclick="togglePosForm(this)">Centroavante</button>
-          <button class="pos-form-btn" onclick="togglePosForm(this)">Qualquer</button>
+          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Goleiro" data-i18n="pos_goleiro">Goleiro</button>
+          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Zagueiro" data-i18n="pos_zagueiro">Zagueiro</button>
+          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Lateral" data-i18n="pos_lateral">Lateral</button>
+          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Volante" data-i18n="pos_volante">Volante</button>
+          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Meia" data-i18n="pos_meia">Meia</button>
+          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Ponta" data-i18n="pos_ponta">Ponta</button>
+          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Centroavante" data-i18n="pos_centroavante">Centroavante</button>
+          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Qualquer" data-i18n="pos_qualquer">Qualquer</button>
         </div>
       </div>
       <div class="form-group full">
-        <label>Descrição / observações</label>
-        <textarea id="an-desc" rows="3" placeholder="Ex: Todo sábado! Trazemos bola, só falta você. Racha descontraído, mas precisa de compromisso."></textarea>
+        <label data-i18n="form_desc">Descrição / observações</label>
+        <textarea id="an-desc" rows="3" placeholder="Ex: Todo sábado! Trazemos bola, só falta você."></textarea>
       </div>
     </div>
-    <button class="btn-publicar" onclick="publicarJogo()">🚀 Publicar Racha</button>
+    <button class="btn-publicar" onclick="publicarJogo()" data-i18n="btn_publicar">🚀 Publicar Racha</button>
   </div>
 </div>
 
@@ -1086,10 +1024,220 @@
   </div>
 </div>
 
+<!-- OVERLAY TRADUÇÃO -->
+<div class="translate-overlay" id="translate-overlay">
+  <div class="translate-spinner"></div>
+  <div class="translate-msg" id="translate-msg">Traduzindo...</div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
+// ===================== TEXTOS BASE (sempre em PT) =====================
+// Todos os textos que aparecem na interface estão aqui.
+// Quando você adicionar algo novo no HTML, basta:
+// 1. Colocar data-i18n="minha_chave" no elemento
+// 2. Adicionar a chave e o texto em PT aqui embaixo
+const textosPT = {
+  nav_buscar:          "Buscar Racha",
+  nav_meus:            "Meus Jogos",
+  btn_anunciar:        "+ Anunciar Racha",
+  hero_tag:            "A maior rede de racha do Brasil",
+  hero_h1_linha1:      "Procurou",
+  hero_h1_linha2:      "Achou",
+  hero_p:              "Filtra por cidade, dia, horário e posição — e entra no jogo.",
+  stat_jogos:          "Jogos hoje",
+  stat_boleiros:       "Boleiros ativos",
+  stat_cidades:        "Cidades",
+  filter_title:        "Filtrar partidas",
+  filter_pos_title:    "Posição procurada",
+  label_cidade:        "Cidade",
+  label_data:          "Data",
+  label_horario:       "Horário",
+  label_nivel:         "Nível",
+  opt_todas_cidades:   "Todas as cidades",
+  opt_qualquer_horario:"Qualquer horário",
+  opt_manha:           "Manhã (até 12h)",
+  opt_tarde:           "Tarde (12h–18h)",
+  opt_noite:           "Noite (após 18h)",
+  opt_todos_niveis:    "Todos os níveis",
+  nivel_basico:        "Básico",
+  nivel_intermediario: "Intermediário",
+  nivel_avancado:      "Avançado",
+  pos_goleiro:         "Goleiro",
+  pos_zagueiro:        "Zagueiro",
+  pos_lateral:         "Lateral",
+  pos_volante:         "Volante",
+  pos_meia:            "Meia",
+  pos_ponta:           "Ponta",
+  pos_centroavante:    "Centroavante",
+  pos_qualquer:        "Qualquer",
+  btn_limpar:          "Limpar",
+  btn_buscar:          "Buscar Partidas",
+  divider_text:        "Partidas disponíveis",
+  tab_todos:           "Todos",
+  tab_hoje:            "Hoje",
+  tab_semana:          "Esta semana",
+  tab_urgente:         "Urgentes",
+  result_label:        "partidas encontradas",
+  sort_data:           "Mais próximas",
+  sort_vagas:          "Mais vagas",
+  sort_nivel:          "Por nível",
+  modal_anunciar_title:"Anunciar Racha",
+  form_nome:           "Nome do jogo / apelido",
+  form_local:          "Local / endereço",
+  form_tipo:           "Tipo de jogo",
+  tipo_campo:          "Campo",
+  tipo_aberta:         "Pelada aberta",
+  form_vagas:          "Vagas disponíveis",
+  form_posicoes:       "Posições que precisam",
+  form_desc:           "Descrição / observações",
+  btn_publicar:        "Publicar Racha",
+  detalhe_horario:     "Horário",
+  detalhe_vagas:       "Vagas",
+  detalhe_total:       "Total jogadores",
+  detalhe_lotado:      "Lotado",
+  detalhe_posicoes:    "Posições procuradas",
+  detalhe_contato:     "Contato",
+  btn_quero_jogar:     "Quero Jogar!",
+  btn_vagas_esgotadas: "Vagas Esgotadas",
+  btn_entrar:          "Entrar",
+  btn_lotado:          "Lotado",
+  badge_urgente:       "urgente",
+  vagas_label:         "vagas",
+  toast_encontrados:   "partida(s) encontrada(s)!",
+  toast_publicado:     "Racha publicado com sucesso!",
+  toast_campos:        "Preencha todos os campos obrigatórios!",
+  toast_sem_jogos:     "Você ainda não anunciou nenhum racha!",
+  toast_entrou:        "Você entrou no racha! Boa pelada!",
+  empty_title:         "Nenhuma partida encontrada. Que tal anunciar o seu racha?",
+  traduzindo:          "Traduzindo a página...",
+};
+
+// ===================== CACHE DE TRADUÇÕES =====================
+// Guarda as traduções já feitas pra não chamar a API de novo
+const cache = {
+  pt: { ...textosPT }
+  // en e es serão preenchidos automaticamente pela API
+};
+
+let currentLang = 'pt';
+let traducaoAtual = { ...textosPT };
+
+// ===================== API MYMEMORY =====================
+async function traduzirTexto(texto, destino) {
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(texto)}&langpair=pt|${destino}`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.responseStatus === 200) {
+      return data.responseData.translatedText;
+    }
+    return texto; // fallback: retorna o original se der erro
+  } catch {
+    return texto;
+  }
+}
+
+// Traduz todas as chaves de uma vez, em lotes pra não sobrecarregar a API
+async function traduzirTudo(destino) {
+  // Se já temos no cache, usa direto
+  if (cache[destino]) {
+    return cache[destino];
+  }
+
+  const chaves = Object.keys(textosPT);
+  const resultado = {};
+
+  // Processa em lotes de 5 pra não travar o navegador
+  const tamanhoLote = 5;
+  for (let i = 0; i < chaves.length; i += tamanhoLote) {
+    const lote = chaves.slice(i, i + tamanhoLote);
+    const promises = lote.map(chave =>
+      traduzirTexto(textosPT[chave], destino).then(tr => ({ chave, tr }))
+    );
+    const respostas = await Promise.all(promises);
+    respostas.forEach(({ chave, tr }) => {
+      resultado[chave] = tr;
+    });
+  }
+
+  cache[destino] = resultado;
+  return resultado;
+}
+
+// ===================== APLICAR TRADUÇÃO NA TELA =====================
+function aplicarTraducao(traducoes) {
+  traducaoAtual = traducoes;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const chave = el.getAttribute('data-i18n');
+    if (traducoes[chave] !== undefined) {
+      el.textContent = traducoes[chave];
+    }
+  });
+  aplicarTab(); // re-renderiza os cards com os novos textos
+}
+
+// Atalho pra pegar tradução atual
+function t(chave) {
+  return traducaoAtual[chave] || textosPT[chave] || chave;
+}
+
+// ===================== TROCAR IDIOMA =====================
+async function setLang(lang) {
+  if (lang === currentLang) return;
+
+  const botao = document.querySelector(`.lang-btn:nth-child(${lang === 'pt' ? 1 : lang === 'en' ? 2 : 3})`);
+
+  if (lang === 'pt') {
+    // PT não precisa de API — usa os textos originais
+    currentLang = 'pt';
+    document.documentElement.lang = 'pt-BR';
+    atualizarBotoesLang('pt');
+    aplicarTraducao(textosPT);
+    return;
+  }
+
+  // Mostra loading no botão e no overlay
+  if (botao) {
+    botao.disabled = true;
+    botao.classList.add('loading');
+  }
+
+  const destino = lang === 'en' ? 'en' : 'es';
+  const msgOverlay = lang === 'en' ? 'Translating...' : 'Traduciendo...';
+
+  // Se ainda não tem no cache, mostra o overlay de carregamento
+  if (!cache[lang]) {
+    document.getElementById('translate-msg').textContent = t('traduzindo');
+    document.getElementById('translate-overlay').classList.add('show');
+  }
+
+  try {
+    const traducoes = await traduzirTudo(destino);
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    atualizarBotoesLang(lang);
+    aplicarTraducao(traducoes);
+  } catch (err) {
+    mostrarToast('Erro ao traduzir. Verifique sua conexão.', true);
+  } finally {
+    document.getElementById('translate-overlay').classList.remove('show');
+    if (botao) {
+      botao.disabled = false;
+      botao.classList.remove('loading');
+    }
+  }
+}
+
+function atualizarBotoesLang(lang) {
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    const langDoBotao = b.textContent.trim().replace(/\s+.*/, '').toLowerCase();
+    b.classList.toggle('active', langDoBotao === lang);
+  });
+}
+
 // ===================== DATA =====================
 const hoje = new Date();
 function dataFormatada(diasAFrente, hora) {
@@ -1099,132 +1247,41 @@ function dataFormatada(diasAFrente, hora) {
 }
 
 let jogos = [
-  {
-    id: 1,
-    nome: "Racha da Sé",
-    cidade: "São Paulo - SP",
-    local: "Campo Sintético do Anhangabaú",
-    data: dataFormatada(0, "19:00"),
-    nivel: "Intermediário",
-    tipo: "Society",
-    vagas: 3,
-    totalVagas: 14,
-    posicoes: ["Meia", "Ponta", "Centroavante"],
-    desc: "Racha semanal firme! Galera comprometida, jogo limpo. Trazemos bola e coletes.",
-    urgente: false,
-    contato: "(11) 9 9876-5432"
-  },
-  {
-    id: 2,
-    nome: "Pelada Beira Rio",
-    cidade: "Piracicaba - SP",
-    local: "Campo do Parque do Povo, Av. Beira Rio",
-    data: dataFormatada(0, "07:30"),
-    nivel: "Básico",
-    tipo: "Pelada aberta",
-    vagas: 5,
-    totalVagas: 22,
-    posicoes: ["Goleiro", "Zagueiro", "Qualquer"],
-    desc: "Pelada aberta todo sábado de manhã. Nível tranquilo, pessoal descontraído. Aparece que tem vaga!",
-    urgente: true,
-    contato: "(19) 9 9123-4567"
-  },
-  {
-    id: 3,
-    nome: "Copa Jardim America",
-    cidade: "Campinas - SP",
-    local: "Arena Campos — Rua Barão de Itapura",
-    data: dataFormatada(1, "20:00"),
-    nivel: "Avançado",
-    tipo: "Society",
-    vagas: 1,
-    totalVagas: 14,
-    posicoes: ["Goleiro"],
-    desc: "Falta 1 goleiro para a rodada de amanhã. Pessoal joga sério, mas clima é ótimo. Só não pode falhar.",
-    urgente: true,
-    contato: "(19) 9 8765-4321"
-  },
-  {
-    id: 4,
-    nome: "Racha da Vila",
-    cidade: "São Paulo - SP",
-    local: "Campo Sintético Vila Madalena",
-    data: dataFormatada(2, "18:00"),
-    nivel: "Intermediário",
-    tipo: "Futsal",
-    vagas: 4,
-    totalVagas: 10,
-    posicoes: ["Lateral", "Volante", "Meia"],
-    desc: "Racha de futsal nível intermediário. Pessoal unido, jogo técnico. Bem-vindo quem gosta de dar bola.",
-    urgente: false,
-    contato: "(11) 9 7654-3210"
-  },
-  {
-    id: 5,
-    nome: "Guerreiros do Sul",
-    cidade: "Porto Alegre - RS",
-    local: "Campo do Menino Deus — Rua Cel. Genuíno",
-    data: dataFormatada(3, "09:00"),
-    nivel: "Básico",
-    tipo: "Campo",
-    vagas: 8,
-    totalVagas: 22,
-    posicoes: ["Zagueiro", "Lateral", "Volante", "Centroavante"],
-    desc: "Partida no campo de grama natural! Domingão clássico com galera boa. Muitas vagas ainda.",
-    urgente: false,
-    contato: "(51) 9 9876-1234"
-  },
-  {
-    id: 6,
-    nome: "Fut Noturno Lapa",
-    cidade: "São Paulo - SP",
-    local: "Arena FutNight Lapa — R. Catão",
-    data: dataFormatada(4, "22:00"),
-    nivel: "Intermediário",
-    tipo: "Society",
-    vagas: 0,
-    totalVagas: 14,
-    posicoes: [],
-    desc: "Partida noturna tradicional. Vagas esgotadas, mas cadastra-se na lista de espera!",
-    urgente: false,
-    contato: "(11) 9 5432-1098"
-  },
-  {
-    id: 7,
-    nome: "Racha da Praça",
-    cidade: "Ribeirão Preto - SP",
-    local: "Campo da Praça do Coração — Centro",
-    data: dataFormatada(5, "16:00"),
-    nivel: "Básico",
-    tipo: "Pelada aberta",
-    vagas: 6,
-    totalVagas: 22,
-    posicoes: ["Qualquer"],
-    desc: "Clássico da cidade! Já tem 10 anos de racha. Todo mundo joga. Traz sua chuteira e boa vontade.",
-    urgente: false,
-    contato: "(16) 9 8765-5678"
-  },
-  {
-    id: 8,
-    nome: "Elite FC Futsal",
-    cidade: "Belo Horizonte - MG",
-    local: "CT Elite Sports — Savassi",
-    data: dataFormatada(6, "20:30"),
-    nivel: "Avançado",
-    tipo: "Futsal",
-    vagas: 2,
-    totalVagas: 10,
-    posicoes: ["Ponta", "Fixo"],
-    desc: "Futsal de alto nível, galera ex-federação. Só pra quem joga mesmo. Jogo limpo e rápido.",
-    urgente: false,
-    contato: "(31) 9 9999-8888"
-  }
+  { id:1, nome:"Racha da Sé", cidade:"São Paulo - SP", local:"Campo Sintético do Anhangabaú", data:dataFormatada(0,"19:00"), nivel:"Intermediário", tipo:"Society", vagas:3, totalVagas:14, posicoes:["Meia","Ponta","Centroavante"], desc:"Racha semanal firme! Galera comprometida, jogo limpo. Trazemos bola e coletes.", urgente:false, contato:"(11) 9 9876-5432" },
+  { id:2, nome:"Pelada Beira Rio", cidade:"Piracicaba - SP", local:"Campo do Parque do Povo, Av. Beira Rio", data:dataFormatada(0,"07:30"), nivel:"Básico", tipo:"Pelada aberta", vagas:5, totalVagas:22, posicoes:["Goleiro","Zagueiro","Qualquer"], desc:"Pelada aberta todo sábado de manhã. Nível tranquilo, pessoal descontraído. Aparece que tem vaga!", urgente:true, contato:"(19) 9 9123-4567" },
+  { id:3, nome:"Copa Jardim America", cidade:"Campinas - SP", local:"Arena Campos — Rua Barão de Itapura", data:dataFormatada(1,"20:00"), nivel:"Avançado", tipo:"Society", vagas:1, totalVagas:14, posicoes:["Goleiro"], desc:"Falta 1 goleiro para a rodada de amanhã. Pessoal joga sério, mas clima é ótimo. Só não pode falhar.", urgente:true, contato:"(19) 9 8765-4321" },
+  { id:4, nome:"Racha da Vila", cidade:"São Paulo - SP", local:"Campo Sintético Vila Madalena", data:dataFormatada(2,"18:00"), nivel:"Intermediário", tipo:"Futsal", vagas:4, totalVagas:10, posicoes:["Lateral","Volante","Meia"], desc:"Racha de futsal nível intermediário. Pessoal unido, jogo técnico. Bem-vindo quem gosta de dar bola.", urgente:false, contato:"(11) 9 7654-3210" },
+  { id:5, nome:"Guerreiros do Sul", cidade:"Porto Alegre - RS", local:"Campo do Menino Deus — Rua Cel. Genuíno", data:dataFormatada(3,"09:00"), nivel:"Básico", tipo:"Campo", vagas:8, totalVagas:22, posicoes:["Zagueiro","Lateral","Volante","Centroavante"], desc:"Partida no campo de grama natural! Domingão clássico com galera boa. Muitas vagas ainda.", urgente:false, contato:"(51) 9 9876-1234" },
+  { id:6, nome:"Fut Noturno Lapa", cidade:"São Paulo - SP", local:"Arena FutNight Lapa — R. Catão", data:dataFormatada(4,"22:00"), nivel:"Intermediário", tipo:"Society", vagas:0, totalVagas:14, posicoes:[], desc:"Partida noturna tradicional. Vagas esgotadas, mas cadastra-se na lista de espera!", urgente:false, contato:"(11) 9 5432-1098" },
+  { id:7, nome:"Racha da Praça", cidade:"Ribeirão Preto - SP", local:"Campo da Praça do Coração — Centro", data:dataFormatada(5,"16:00"), nivel:"Básico", tipo:"Pelada aberta", vagas:6, totalVagas:22, posicoes:["Qualquer"], desc:"Clássico da cidade! Já tem 10 anos de racha. Todo mundo joga. Traz sua chuteira e boa vontade.", urgente:false, contato:"(16) 9 8765-5678" },
+  { id:8, nome:"Elite FC Futsal", cidade:"Belo Horizonte - MG", local:"CT Elite Sports — Savassi", data:dataFormatada(6,"20:30"), nivel:"Avançado", tipo:"Futsal", vagas:2, totalVagas:10, posicoes:["Ponta","Fixo"], desc:"Futsal de alto nível, galera ex-federação. Só pra quem joga mesmo. Jogo limpo e rápido.", urgente:false, contato:"(31) 9 9999-8888" }
 ];
 
 let tabAtual = 'todos';
 let jogosFiltrados = [...jogos];
 
 // ===================== RENDER =====================
+function getNivelClass(nivel) {
+  if (nivel === 'Básico') return 'tag-nivel-basico';
+  if (nivel === 'Intermediário') return 'tag-nivel-intermediario';
+  if (nivel === 'Avançado') return 'tag-nivel-avancado';
+  return 'tag-nivel-basico';
+}
+
+function getNivelLabel(nivel) {
+  const map = { 'Básico':'nivel_basico', 'Intermediário':'nivel_intermediario', 'Avançado':'nivel_avancado' };
+  return t(map[nivel] || 'nivel_basico');
+}
+
+function getPosLabel(pos) {
+  const map = {
+    'Goleiro':'pos_goleiro','Zagueiro':'pos_zagueiro','Lateral':'pos_lateral',
+    'Volante':'pos_volante','Meia':'pos_meia','Ponta':'pos_ponta',
+    'Centroavante':'pos_centroavante','Qualquer':'pos_qualquer'
+  };
+  return map[pos] ? t(map[pos]) : pos;
+}
+
 function renderCards(lista) {
   const container = document.getElementById('cards-container');
   document.getElementById('total-count').textContent = lista.length;
@@ -1233,22 +1290,24 @@ function renderCards(lista) {
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-ball">⚽</div>
-        <h3>Nenhuma partida encontrada.<br>Que tal anunciar o seu racha?</h3>
+        <h3>${t('empty_title')}</h3>
       </div>`;
     return;
   }
 
   container.innerHTML = lista.map((j, i) => {
     const cheio = j.vagas === 0;
-    const nivel = j.nivel.toLowerCase();
-    const tagNivel = `tag-nivel-${nivel === 'básico' ? 'basico' : nivel === 'intermediário' ? 'intermediario' : 'avancado'}`;
-    const posStr = j.posicoes.length ? j.posicoes.slice(0,2).join(', ') + (j.posicoes.length > 2 ? '...' : '') : '';
+    const tagNivel = getNivelClass(j.nivel);
+    const nivelLabel = getNivelLabel(j.nivel);
+    const posStr = j.posicoes.length
+      ? j.posicoes.slice(0,2).map(p => getPosLabel(p)).join(', ') + (j.posicoes.length > 2 ? '...' : '')
+      : '';
 
     return `
-    <div class="jogo-card ${j.urgente ? 'urgente' : ''} ${cheio ? 'cheio' : ''}"
+    <div class="jogo-card ${j.urgente?'urgente':''} ${cheio?'cheio':''}"
          style="animation-delay:${i*0.05}s"
          onclick="abrirDetalhe(${j.id})">
-      ${j.urgente ? '<span class="badge-urgente">urgente</span>' : ''}
+      ${j.urgente ? `<span class="badge-urgente">${t('badge_urgente')}</span>` : ''}
       <div class="card-data">
         <div class="card-dia">${j.data.obj.getDate().toString().padStart(2,'0')}</div>
         <div class="card-mes">${j.data.obj.toLocaleString('pt-BR',{month:'short'}).replace('.','')}</div>
@@ -1258,18 +1317,19 @@ function renderCards(lista) {
         <div class="card-titulo">${j.nome}</div>
         <div class="card-local">📍 ${j.local} &bull; ${j.cidade}</div>
         <div class="card-tags">
-          <span class="tag ${tagNivel}">${j.nivel}</span>
+          <span class="tag ${tagNivel}">${nivelLabel}</span>
           <span class="tag tag-tipo">${j.tipo}</span>
           ${posStr ? `<span class="tag tag-pos">🦵 ${posStr}</span>` : ''}
         </div>
       </div>
       <div class="card-vagas">
-        <div class="vagas-num" style="${cheio ? 'color:var(--texto-muted)' : ''}">
+        <div class="vagas-num" style="${cheio?'color:var(--texto-muted)':''}">
           ${cheio ? '—' : j.vagas}
         </div>
-        <div class="vagas-label">${cheio ? 'Lotado' : 'vagas'}</div>
-        <button class="btn-entrar ${cheio ? 'cheio-btn' : ''}" onclick="event.stopPropagation(); ${cheio ? '' : `abrirDetalhe(${j.id})`}">
-          ${cheio ? 'Lotado' : 'Entrar'}
+        <div class="vagas-label">${cheio ? t('btn_lotado') : t('vagas_label')}</div>
+        <button class="btn-entrar ${cheio?'cheio-btn':''}"
+          onclick="event.stopPropagation(); ${cheio ? '' : `abrirDetalhe(${j.id})`}">
+          ${cheio ? t('btn_lotado') : t('btn_entrar')}
         </button>
       </div>
     </div>`;
@@ -1281,18 +1341,26 @@ function buscar() {
   const cidade = document.getElementById('f-cidade').value;
   const data = document.getElementById('f-data').value;
   const horario = document.getElementById('f-horario').value;
-  const nivel = document.getElementById('f-nivel').value;
-  const posSelected = [...document.querySelectorAll('#posicoes-filtro .pos-btn.selected')].map(b => b.textContent);
+  const nivelSel = document.getElementById('f-nivel').value;
+  const posSelected = [...document.querySelectorAll('#posicoes-filtro .pos-btn.selected')].map(b => b.getAttribute('data-pos'));
+
+  // Monta mapa de nível traduzido → PT original
+  const nivelMap = {
+    [t('nivel_basico')]: 'Básico',
+    [t('nivel_intermediario')]: 'Intermediário',
+    [t('nivel_avancado')]: 'Avançado',
+  };
+  const nivelPT = nivelMap[nivelSel] || nivelSel;
 
   jogosFiltrados = jogos.filter(j => {
     if (cidade && j.cidade !== cidade) return false;
     if (data && j.data.str !== data) return false;
-    if (nivel && j.nivel !== nivel) return false;
+    if (nivelSel && j.nivel !== nivelPT) return false;
     if (horario) {
       const h = parseInt(j.data.hora);
-      if (horario === 'Manhã (até 12h)' && h >= 12) return false;
-      if (horario === 'Tarde (12h–18h)' && (h < 12 || h >= 18)) return false;
-      if (horario === 'Noite (após 18h)' && h < 18) return false;
+      if (horario === t('opt_manha') && h >= 12) return false;
+      if (horario === t('opt_tarde') && (h < 12 || h >= 18)) return false;
+      if (horario === t('opt_noite') && h < 18) return false;
     }
     if (posSelected.length > 0 && !posSelected.includes('Qualquer')) {
       const temPos = posSelected.some(p => j.posicoes.includes(p) || j.posicoes.includes('Qualquer'));
@@ -1302,21 +1370,16 @@ function buscar() {
   });
 
   aplicarTab();
-  mostrarToast(`${jogosFiltrados.length} partida(s) encontrada(s)!`);
+  mostrarToast(`${jogosFiltrados.length} ${t('toast_encontrados')}`);
 }
 
 function aplicarTab() {
   let lista = [...jogosFiltrados];
-  const agora = new Date();
   const fim = new Date(); fim.setDate(fim.getDate() + 7);
 
-  if (tabAtual === 'hoje') {
-    lista = lista.filter(j => j.data.str === hoje.toISOString().split('T')[0]);
-  } else if (tabAtual === 'semana') {
-    lista = lista.filter(j => j.data.obj <= fim);
-  } else if (tabAtual === 'urgente') {
-    lista = lista.filter(j => j.urgente || j.vagas <= 2);
-  }
+  if (tabAtual === 'hoje') lista = lista.filter(j => j.data.str === hoje.toISOString().split('T')[0]);
+  else if (tabAtual === 'semana') lista = lista.filter(j => j.data.obj <= fim);
+  else if (tabAtual === 'urgente') lista = lista.filter(j => j.urgente || j.vagas <= 2);
 
   renderCards(lista);
 }
@@ -1331,13 +1394,8 @@ function limparFiltros() {
   aplicarTab();
 }
 
-function togglePos(btn) {
-  btn.classList.toggle('selected');
-}
-
-function togglePosForm(btn) {
-  btn.classList.toggle('selected');
-}
+function togglePos(btn) { btn.classList.toggle('selected'); }
+function togglePosForm(btn) { btn.classList.toggle('selected'); }
 
 function mudarTab(btn, tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1351,11 +1409,7 @@ function mudarAba(aba) {
   event.target.classList.add('active');
   if (aba === 'meus') {
     const meus = jogos.filter(j => j._meu);
-    if (meus.length === 0) {
-      mostrarToast('Você ainda não anunciou nenhum racha!');
-    } else {
-      renderCards(meus);
-    }
+    meus.length === 0 ? mostrarToast(t('toast_sem_jogos')) : renderCards(meus);
   } else {
     aplicarTab();
   }
@@ -1374,47 +1428,49 @@ function ordenar(criterio) {
 // ===================== MODAL ANUNCIAR =====================
 function abrirModalAnunciar() {
   document.getElementById('modal-anunciar').classList.add('open');
-  const inp = document.getElementById('an-data');
-  inp.value = hoje.toISOString().split('T')[0];
+  document.getElementById('an-data').value = hoje.toISOString().split('T')[0];
 }
 
 function publicarJogo() {
-  const nome = document.getElementById('an-nome').value.trim();
+  const nome  = document.getElementById('an-nome').value.trim();
   const cidade = document.getElementById('an-cidade').value;
   const local = document.getElementById('an-local').value.trim();
   const dataVal = document.getElementById('an-data').value;
-  const hora = document.getElementById('an-hora').value;
-  const tipo = document.getElementById('an-tipo').value;
+  const hora  = document.getElementById('an-hora').value;
+  const tipo  = document.getElementById('an-tipo').value;
   const nivel = document.getElementById('an-nivel').value;
   const vagas = parseInt(document.getElementById('an-vagas').value) || 3;
-  const desc = document.getElementById('an-desc').value.trim();
-  const posicoes = [...document.querySelectorAll('#posicoes-form .pos-form-btn.selected')].map(b => b.textContent);
+  const desc  = document.getElementById('an-desc').value.trim();
+  const posicoes = [...document.querySelectorAll('#posicoes-form .pos-form-btn.selected')].map(b => b.getAttribute('data-pos'));
+
+  // Converte nível traduzido → PT original
+  const nivelMap = {
+    [t('nivel_basico')]: 'Básico',
+    [t('nivel_intermediario')]: 'Intermediário',
+    [t('nivel_avancado')]: 'Avançado',
+  };
+  const nivelPT = nivelMap[nivel] || nivel;
 
   if (!nome || !local || !dataVal || !hora) {
-    mostrarToast('Preencha todos os campos obrigatórios!', true);
+    mostrarToast(t('toast_campos'), true);
     return;
   }
 
   const novoJogo = {
-    id: Date.now(),
-    nome, cidade, local,
+    id: Date.now(), nome, cidade, local,
     data: { obj: new Date(dataVal + 'T' + hora), str: dataVal, hora },
-    nivel, tipo,
-    vagas, totalVagas: vagas + 11,
+    nivel: nivelPT, tipo, vagas, totalVagas: vagas + 11,
     posicoes: posicoes.length ? posicoes : ['Qualquer'],
     desc: desc || 'Venha jogar conosco!',
-    urgente: false,
-    contato: 'Direto no app',
-    _meu: true
+    urgente: false, contato: 'Direto no app', _meu: true
   };
 
   jogos.unshift(novoJogo);
   jogosFiltrados = [...jogos];
   fecharModal('modal-anunciar');
   aplicarTab();
-  mostrarToast('🚀 Racha publicado com sucesso!');
+  mostrarToast('⚽ ' + t('toast_publicado'));
 
-  // reset form
   document.getElementById('an-nome').value = '';
   document.getElementById('an-local').value = '';
   document.getElementById('an-hora').value = '';
@@ -1429,17 +1485,17 @@ function abrirDetalhe(id) {
   if (!j) return;
 
   const cheio = j.vagas === 0;
-  const nivel = j.nivel.toLowerCase();
-  const tagNivel = `tag-nivel-${nivel === 'básico' ? 'basico' : nivel === 'intermediário' ? 'intermediario' : 'avancado'}`;
+  const tagNivel = getNivelClass(j.nivel);
+  const nivelLabel = getNivelLabel(j.nivel);
   const diaSemana = j.data.obj.toLocaleString('pt-BR', {weekday:'long'});
-  const dataFull = j.data.obj.toLocaleString('pt-BR', {day:'2-digit',month:'long',year:'numeric'});
+  const dataFull  = j.data.obj.toLocaleString('pt-BR', {day:'2-digit',month:'long',year:'numeric'});
 
   document.getElementById('modal-detalhe-body').innerHTML = `
     <div class="detalhe-header">
       <div class="card-tags" style="margin-bottom:0.7rem">
-        <span class="tag ${tagNivel}">${j.nivel}</span>
+        <span class="tag ${tagNivel}">${nivelLabel}</span>
         <span class="tag tag-tipo">${j.tipo}</span>
-        ${j.urgente ? '<span class="tag" style="color:var(--laranja);border-color:rgba(255,107,0,.3);background:rgba(255,107,0,.08)">Urgente</span>' : ''}
+        ${j.urgente ? `<span class="tag" style="color:var(--laranja);border-color:rgba(255,107,0,.3);background:rgba(255,107,0,.08)">${t('badge_urgente')}</span>` : ''}
       </div>
       <div class="detalhe-nome">${j.nome}</div>
       <div class="detalhe-local">📍 ${j.local} &bull; ${j.cidade}</div>
@@ -1448,37 +1504,37 @@ function abrirDetalhe(id) {
     <div class="detalhe-grid">
       <div class="detalhe-item">
         <div class="detalhe-item-val">${j.data.hora}</div>
-        <div class="detalhe-item-key">Horário</div>
+        <div class="detalhe-item-key">${t('detalhe_horario')}</div>
       </div>
       <div class="detalhe-item">
-        <div class="detalhe-item-val" style="${cheio?'color:var(--texto-muted)':''}">${cheio ? '—' : j.vagas}</div>
-        <div class="detalhe-item-key">${cheio ? 'Lotado' : 'Vagas'}</div>
+        <div class="detalhe-item-val" style="${cheio?'color:var(--texto-muted)':''}">${cheio?'—':j.vagas}</div>
+        <div class="detalhe-item-key">${cheio ? t('detalhe_lotado') : t('detalhe_vagas')}</div>
       </div>
       <div class="detalhe-item">
         <div class="detalhe-item-val">${j.totalVagas}</div>
-        <div class="detalhe-item-key">Total jogadores</div>
+        <div class="detalhe-item-key">${t('detalhe_total')}</div>
       </div>
     </div>
 
     <div class="detalhe-descricao">
-      📅 <strong>${diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1)}, ${dataFull}</strong><br><br>
+      📅 <strong>${diaSemana.charAt(0).toUpperCase()+diaSemana.slice(1)}, ${dataFull}</strong><br><br>
       ${j.desc}
     </div>
 
     <div class="detalhe-posicoes">
-      <h4>Posições procuradas</h4>
+      <h4>${t('detalhe_posicoes')}</h4>
       <div class="posicoes-grid">
-        ${j.posicoes.map(p => `<button class="pos-btn selected" style="pointer-events:none">${p}</button>`).join('')}
+        ${j.posicoes.map(p => `<button class="pos-btn selected" style="pointer-events:none">${getPosLabel(p)}</button>`).join('')}
       </div>
     </div>
 
     <div style="background:var(--cinza-medio);border:1px solid var(--cinza-borda);border-radius:10px;padding:0.8rem 1rem;margin-bottom:1.2rem;font-size:0.85rem">
-      📱 <strong>Contato:</strong> ${j.contato}
+      📱 <strong>${t('detalhe_contato')}:</strong> ${j.contato}
     </div>
 
     ${cheio
-      ? `<button class="btn-confirmar" style="background:var(--cinza-borda);color:var(--texto-muted);cursor:not-allowed">Vagas Esgotadas</button>`
-      : `<button class="btn-confirmar" onclick="confirmarEntrada(${j.id})">✅ Quero Jogar!</button>`
+      ? `<button class="btn-confirmar" style="background:var(--cinza-borda);color:var(--texto-muted);cursor:not-allowed">${t('btn_vagas_esgotadas')}</button>`
+      : `<button class="btn-confirmar" onclick="confirmarEntrada(${j.id})">✅ ${t('btn_quero_jogar')}</button>`
     }
   `;
 
@@ -1491,14 +1547,12 @@ function confirmarEntrada(id) {
     j.vagas--;
     fecharModal('modal-detalhe');
     aplicarTab();
-    mostrarToast('⚽ Você entrou no racha! Boa pelada!');
+    mostrarToast('⚽ ' + t('toast_entrou'));
   }
 }
 
 // ===================== UTILS =====================
-function fecharModal(id) {
-  document.getElementById(id).classList.remove('open');
-}
+function fecharModal(id) { document.getElementById(id).classList.remove('open'); }
 
 document.querySelectorAll('.modal-overlay').forEach(m => {
   m.addEventListener('click', function(e) {
@@ -1507,12 +1561,12 @@ document.querySelectorAll('.modal-overlay').forEach(m => {
 });
 
 function mostrarToast(msg, erro) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.background = erro ? '#ff4444' : 'var(--verde)';
-  t.style.color = erro ? '#fff' : 'var(--preto)';
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.background = erro ? '#ff4444' : 'var(--verde)';
+  el.style.color = erro ? '#fff' : 'var(--preto)';
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
 }
 
 // ===================== INIT =====================
