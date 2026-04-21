@@ -1,6 +1,6 @@
 # BoleirApp — Backend
 
-Backend completo em **Python + FastAPI** para o site Acha Racha.
+Backend completo em **Python + FastAPI** para o site Futebol e Resenha.
 
 ## Estrutura de arquivos
 
