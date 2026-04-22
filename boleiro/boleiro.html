@@ -1,1578 +1,2750 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Resenha Futebol — Acha Racha</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --verde: #00C853;
-    --verde-escuro: #007A33;
-    --preto: #0A0A0A;
-    --cinza-escuro: #141414;
-    --cinza-medio: #1E1E1E;
-    --cinza-borda: #2A2A2A;
-    --branco: #F5F5F5;
-    --amarelo: #FFD600;
-    --laranja: #FF6B00;
-    --texto-muted: #888;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--preto);
-    color: var(--branco);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(0,200,83,0.03) 60px, rgba(0,200,83,0.03) 62px),
-      repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(0,200,83,0.03) 60px, rgba(0,200,83,0.03) 62px);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(10,10,10,0.95);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--cinza-borda);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-    gap: 1rem;
-  }
-
-  .logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem;
-    letter-spacing: 2px;
-    color: var(--verde);
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    white-space: nowrap;
-  }
-
-  .logo span { color: var(--branco); }
-  .logo-ball { width: 28px; height: 28px; display: inline-flex; flex-shrink: 0; }
-
-  nav { display: flex; gap: 0.5rem; }
-
-  .nav-btn {
-    background: none;
-    border: 1px solid transparent;
-    color: var(--texto-muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    padding: 0.5rem 1.2rem;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-
-  .nav-btn:hover { color: var(--branco); border-color: var(--cinza-borda); }
-  .nav-btn.active { background: var(--verde); color: var(--preto); border-color: var(--verde); font-weight: 600; }
-
-  .header-right { display: flex; align-items: center; gap: 0.6rem; }
-
-  .lang-selector {
-    display: flex;
-    gap: 0.25rem;
-    background: var(--cinza-medio);
-    border: 1px solid var(--cinza-borda);
-    border-radius: 999px;
-    padding: 3px;
-    position: relative;
-  }
-
-  .lang-btn {
-    background: none;
-    border: none;
-    color: var(--texto-muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 0.3rem 0.65rem;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: all 0.18s;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-  }
-
-  .lang-btn:hover { color: var(--branco); }
-  .lang-btn.active { background: var(--verde); color: var(--preto); }
-  .lang-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .lang-spinner {
-    width: 10px;
-    height: 10px;
-    border: 2px solid rgba(0,0,0,0.3);
-    border-top-color: var(--preto);
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-    display: none;
-  }
-
-  .lang-btn.loading .lang-spinner { display: inline-block; }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .btn-anunciar {
-    background: var(--verde);
-    color: var(--preto);
-    border: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-    padding: 0.55rem 1.4rem;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 0.3px;
-    white-space: nowrap;
-  }
-
-  .btn-anunciar:hover { background: #00E060; transform: scale(1.02); }
-
-  /* HERO */
-  .hero {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    padding: 5rem 2rem 3rem;
-  }
-
-  .hero-tag {
-    display: inline-block;
-    background: rgba(0,200,83,0.1);
-    border: 1px solid rgba(0,200,83,0.3);
-    color: var(--verde);
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 0.35rem 1rem;
-    border-radius: 999px;
-    margin-bottom: 1.5rem;
-    animation: fadeInDown 0.6s ease both;
-  }
-
-  .hero h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(3.5rem, 8vw, 7rem);
-    line-height: 0.95;
-    letter-spacing: 2px;
-    animation: fadeInUp 0.7s 0.1s ease both;
-  }
-
-  .hero h1 em { font-style: normal; color: var(--verde); }
-
-  .hero p {
-    color: var(--texto-muted);
-    font-size: 1.05rem;
-    margin-top: 1.2rem;
-    animation: fadeInUp 0.7s 0.2s ease both;
-  }
-
-  .stats-bar {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-    gap: 3rem;
-    padding: 1.5rem 2rem 2.5rem;
-    animation: fadeInUp 0.7s 0.3s ease both;
-  }
-
-  .stat { text-align: center; }
-  .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: var(--verde); line-height: 1; }
-  .stat-label { font-size: 0.75rem; color: var(--texto-muted); text-transform: uppercase; letter-spacing: 1px; }
-
-  .filter-section {
-    position: relative;
-    z-index: 1;
-    max-width: 900px;
-    margin: 0 auto 3rem;
-    padding: 0 1.5rem;
-    animation: fadeInUp 0.7s 0.4s ease both;
-  }
-
-  .filter-card {
-    background: var(--cinza-escuro);
-    border: 1px solid var(--cinza-borda);
-    border-radius: 20px;
-    padding: 1.8rem;
-  }
-
-  .filter-title {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--verde);
-    font-weight: 600;
-    margin-bottom: 1.2rem;
-  }
-
-  .filter-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 0.8rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .filter-group label {
-    display: block;
-    font-size: 0.72rem;
-    color: var(--texto-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 0.4rem;
-    font-weight: 500;
-  }
-
-  .filter-group select,
-  .filter-group input {
-    width: 100%;
-    background: var(--cinza-medio);
-    border: 1px solid var(--cinza-borda);
-    color: var(--branco);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    padding: 0.65rem 0.9rem;
-    border-radius: 10px;
-    outline: none;
-    transition: border-color 0.2s;
-    appearance: none;
-    cursor: pointer;
-  }
-
-  .filter-group select:focus,
-  .filter-group input:focus { border-color: var(--verde); }
-  .filter-group select option { background: #1E1E1E; }
-
-  .posicoes-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .pos-btn {
-    background: var(--cinza-medio);
-    border: 1px solid var(--cinza-borda);
-    color: var(--texto-muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 600;
-    padding: 0.4rem 0.9rem;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .pos-btn:hover { border-color: var(--verde); color: var(--verde); }
-  .pos-btn.selected { background: var(--verde); border-color: var(--verde); color: var(--preto); }
-
-  .filter-actions { display: flex; gap: 0.8rem; justify-content: flex-end; }
-
-  .btn-limpar {
-    background: none;
-    border: 1px solid var(--cinza-borda);
-    color: var(--texto-muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    padding: 0.65rem 1.4rem;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn-limpar:hover { border-color: var(--branco); color: var(--branco); }
-
-  .btn-buscar {
-    background: var(--verde);
-    border: none;
-    color: var(--preto);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 700;
-    padding: 0.65rem 2rem;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn-buscar:hover { background: #00E060; }
-
-  .tabs-section {
-    position: relative;
-    z-index: 1;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-  }
-
-  .tabs {
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid var(--cinza-borda);
-    margin-bottom: 1.5rem;
-  }
-
-  .tab {
-    background: none;
-    border: none;
-    color: var(--texto-muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    padding: 0.8rem 1.5rem;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: all 0.2s;
-  }
-
-  .tab.active { color: var(--verde); border-bottom-color: var(--verde); font-weight: 600; }
-  .tab:hover:not(.active) { color: var(--branco); }
-
-  .result-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    font-size: 0.85rem;
-    color: var(--texto-muted);
-  }
-
-  .result-count strong { color: var(--branco); }
-
-  .sort-select {
-    background: var(--cinza-medio);
-    border: 1px solid var(--cinza-borda);
-    color: var(--branco);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.8rem;
-    padding: 0.3rem 0.6rem;
-    border-radius: 6px;
-    outline: none;
-    cursor: pointer;
-  }
-
-  .cards-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding-bottom: 4rem;
-  }
-
-  .jogo-card {
-    background: var(--cinza-escuro);
-    border: 1px solid var(--cinza-borda);
-    border-radius: 16px;
-    padding: 1.4rem 1.6rem;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 1.2rem;
-    align-items: center;
-    transition: all 0.2s;
-    cursor: pointer;
-    animation: fadeInUp 0.4s ease both;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .jogo-card::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: var(--verde);
-    border-radius: 3px 0 0 3px;
-  }
-
-  .jogo-card.urgente::before { background: var(--laranja); }
-  .jogo-card.cheio::before { background: var(--texto-muted); }
-
-  .jogo-card:hover {
-    border-color: rgba(0,200,83,0.4);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0,200,83,0.08);
-  }
-
-  .jogo-card.cheio:hover { border-color: var(--cinza-borda); transform: none; box-shadow: none; }
-
-  .card-data { text-align: center; min-width: 72px; }
-  .card-dia { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; line-height: 1; color: var(--verde); }
-  .card-mes { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--texto-muted); }
-  .card-hora { font-size: 0.85rem; font-weight: 600; color: var(--branco); margin-top: 0.3rem; }
-
-  .card-info { min-width: 0; }
-  .card-titulo { font-size: 1rem; font-weight: 600; color: var(--branco); margin-bottom: 0.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-local { font-size: 0.82rem; color: var(--texto-muted); margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.3rem; }
-  .card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-
-  .tag {
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 0.2rem 0.6rem;
-    border-radius: 999px;
-    border: 1px solid;
-  }
-
-  .tag-nivel-basico { color: #4FC3F7; border-color: rgba(79,195,247,0.3); background: rgba(79,195,247,0.08); }
-  .tag-nivel-intermediario { color: var(--amarelo); border-color: rgba(255,214,0,0.3); background: rgba(255,214,0,0.08); }
-  .tag-nivel-avancado { color: var(--laranja); border-color: rgba(255,107,0,0.3); background: rgba(255,107,0,0.08); }
-  .tag-tipo { color: var(--verde); border-color: rgba(0,200,83,0.3); background: rgba(0,200,83,0.08); }
-  .tag-pos { color: #CE93D8; border-color: rgba(206,147,216,0.3); background: rgba(206,147,216,0.08); }
-
-  .card-vagas { text-align: right; }
-  .vagas-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; line-height: 1; color: var(--verde); }
-  .vagas-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--texto-muted); }
-
-  .btn-entrar {
-    display: block;
-    margin-top: 0.6rem;
-    background: var(--verde);
-    border: none;
-    color: var(--preto);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 700;
-    padding: 0.4rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-  }
-
-  .btn-entrar:hover { background: #00E060; }
-  .btn-entrar.cheio-btn { background: var(--cinza-borda); color: var(--texto-muted); cursor: not-allowed; }
-
-  .badge-urgente {
-    position: absolute;
-    top: 0.5rem; left: 0.8rem;
-    background: var(--laranja);
-    color: white;
-    font-size: 0.55rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 0.1rem 0.4rem;
-    border-radius: 999px;
-  }
-
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-  }
-
-  .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: var(--cinza-escuro);
-    border: 1px solid var(--cinza-borda);
-    border-radius: 20px;
-    padding: 2rem;
-    width: 100%;
-    max-width: 560px;
-    max-height: 90vh;
-    overflow-y: auto;
-    animation: modalIn 0.3s ease;
-  }
-
-  @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.95) translateY(10px); }
-    to { opacity: 1; transform: none; }
-  }
-
-  .modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.8rem;
-  }
-
-  .modal-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.8rem;
-    color: var(--verde);
-    letter-spacing: 1px;
-  }
-
-  .modal-close {
-    background: var(--cinza-medio);
-    border: 1px solid var(--cinza-borda);
-    color: var(--texto-muted);
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    font-size: 1.1rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-  }
-
-  .modal-close:hover { color: var(--branco); border-color: var(--branco); }
-
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-  .form-group.full { grid-column: 1 / -1; }
-
-  .form-group label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--texto-muted);
-    font-weight: 600;
-  }
-
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    background: var(--cinza-medio);
-    border: 1px solid var(--cinza-borda);
-    color: var(--branco);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    padding: 0.7rem 0.9rem;
-    border-radius: 10px;
-    outline: none;
-    transition: border-color 0.2s;
-    resize: none;
-  }
-
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus { border-color: var(--verde); }
-  .form-group select option { background: #1e1e1e; }
-
-  .posicoes-form { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-
-  .pos-form-btn {
-    background: var(--cinza-medio);
-    border: 1px solid var(--cinza-borda);
-    color: var(--texto-muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.35rem 0.8rem;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-transform: uppercase;
-  }
-
-  .pos-form-btn.selected { background: rgba(206,147,216,0.15); border-color: #CE93D8; color: #CE93D8; }
-
-  .btn-publicar {
-    width: 100%;
-    background: var(--verde);
-    border: none;
-    color: var(--preto);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    padding: 0.9rem;
-    border-radius: 12px;
-    cursor: pointer;
-    margin-top: 1.5rem;
-    transition: all 0.2s;
-  }
-
-  .btn-publicar:hover { background: #00E060; }
-
-  .detalhe-header {
-    background: linear-gradient(135deg, var(--verde-escuro), #004d20);
-    padding: 2rem;
-    border-radius: 12px 12px 0 0;
-    margin: -2rem -2rem 1.5rem;
-  }
-
-  .detalhe-nome { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 1px; }
-  .detalhe-local { color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 0.3rem; }
-
-  .detalhe-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .detalhe-item {
-    background: var(--cinza-medio);
-    border: 1px solid var(--cinza-borda);
-    border-radius: 10px;
-    padding: 0.8rem;
-    text-align: center;
-  }
-
-  .detalhe-item-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--verde); }
-  .detalhe-item-key { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--texto-muted); margin-top: 0.2rem; }
-
-  .detalhe-descricao {
-    background: var(--cinza-medio);
-    border-radius: 10px;
-    padding: 1rem;
-    font-size: 0.88rem;
-    color: var(--texto-muted);
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-  }
-
-  .detalhe-posicoes { margin-bottom: 1.5rem; }
-  .detalhe-posicoes h4 {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--texto-muted);
-    margin-bottom: 0.7rem;
-    font-weight: 600;
-  }
-
-  .btn-confirmar {
-    width: 100%;
-    background: var(--verde);
-    border: none;
-    color: var(--preto);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    padding: 0.9rem;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn-confirmar:hover { background: #00E060; }
-
-  /* OVERLAY DE TRADUÇÃO */
-  .translate-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(10,10,10,0.7);
-    z-index: 300;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 1rem;
-    backdrop-filter: blur(4px);
-  }
-
-  .translate-overlay.show { display: flex; }
-
-  .translate-spinner {
-    width: 48px; height: 48px;
-    border: 3px solid rgba(0,200,83,0.2);
-    border-top-color: var(--verde);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  .translate-msg {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    color: var(--texto-muted);
-  }
-
-  .toast {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: var(--verde);
-    color: var(--preto);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 700;
-    padding: 0.8rem 2rem;
-    border-radius: 999px;
-    z-index: 500;
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    white-space: nowrap;
-  }
-
-  .toast.show { transform: translateX(-50%) translateY(0); }
-
-  .empty-state { text-align: center; padding: 4rem 2rem; }
-  .empty-ball { font-size: 4rem; margin-bottom: 1rem; animation: bounce 1.5s ease infinite; }
-
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
-  .empty-state h3 { font-size: 1.2rem; color: var(--texto-muted); font-weight: 400; }
-
-  @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-15px); }
-    to { opacity: 1; transform: none; }
-  }
-
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: none; }
-  }
-
-  .campo-divider {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 1.5rem 2rem;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .campo-line { flex: 1; height: 1px; background: var(--cinza-borda); }
-  .campo-center {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--texto-muted);
-    padding: 0 1rem;
-    font-weight: 600;
-  }
-
-  @media (max-width: 600px) {
-    header { padding: 0 1rem; }
-    nav { display: none; }
-    .hero { padding: 3rem 1rem 2rem; }
-    .stats-bar { gap: 1.5rem; }
-    .filter-card { padding: 1.2rem; }
-    .filter-grid { grid-template-columns: 1fr 1fr; }
-    .jogo-card { grid-template-columns: auto 1fr; gap: 0.8rem; }
-    .card-vagas { display: none; }
-    .form-grid { grid-template-columns: 1fr; }
-    .detalhe-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--preto); }
-  ::-webkit-scrollbar-thumb { background: var(--cinza-borda); border-radius: 3px; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resenha Futebol | Plataforma Inteligente de Racha</title>
+  <meta name="description" content="Descubra, filtre, entre e gerencie rachas com ranking, lista de espera, perfil e calendário, tudo em uma experiência premium." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-0: #04070e;
+      --bg-1: #0a1221;
+      --bg-2: #0d1b2a;
+      --panel: #0f1728cc;
+      --panel-solid: #0f1728;
+      --panel-2: #14203a;
+      --line: #223154;
+      --text: #f4f8ff;
+      --muted: #9eb0d7;
+      --primary: #1ed760;
+      --primary-2: #16b34e;
+      --danger: #ff6740;
+      --warning: #ffbf3c;
+      --info: #58a6ff;
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 9px;
+      --shadow-1: 0 20px 60px rgba(0, 0, 0, 0.45);
+      --shadow-2: 0 8px 24px rgba(15, 215, 96, 0.2);
+      --maxw: 1260px;
+      --nav-h: 74px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Barlow", sans-serif;
+      background:
+        radial-gradient(1000px 500px at 88% -10%, #185b4a22, transparent 60%),
+        radial-gradient(900px 460px at -6% -10%, #264ea222, transparent 60%),
+        linear-gradient(160deg, var(--bg-0), var(--bg-1) 45%, var(--bg-2));
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 49px, #1ed76008 49px, #1ed76008 50px),
+        repeating-linear-gradient(90deg, transparent, transparent 49px, #1ed76008 49px, #1ed76008 50px);
+      pointer-events: none;
+    }
+
+    .shell {
+      width: min(100%, var(--maxw));
+      margin: 0 auto;
+      padding: 0 22px 80px;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      z-index: 30;
+      background: linear-gradient(180deg, #081022f2, #081022bf 75%, #08102299);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #1c2946;
+      padding: 0 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      text-decoration: none;
+      color: var(--text);
+      min-width: 0;
+    }
+
+    .logo-ball {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      filter: drop-shadow(0 4px 10px #1ed76066);
+    }
+
+    .brand-title {
+      font-family: "Sora", sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    .brand-title strong {
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .top-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .top-nav button,
+    .header-action {
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 999px;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .top-nav button:hover,
+    .header-action:hover {
+      color: var(--text);
+      border-color: #2c3f6c;
+      transform: translateY(-1px);
+    }
+
+    .top-nav button.active {
+      color: #03140b;
+      background: linear-gradient(90deg, var(--primary), #73eb8a);
+      box-shadow: var(--shadow-2);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lang {
+      border-radius: 999px;
+      border: 1px solid #304675;
+      background: #0f1a31;
+      display: flex;
+      padding: 3px;
+      gap: 3px;
+    }
+
+    .lang button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      padding: 6px 11px;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+    }
+
+    .lang button.active {
+      color: #001f0e;
+      background: linear-gradient(90deg, var(--primary), #7ff09a);
+    }
+
+    .header-action {
+      color: #04160d;
+      font-weight: 700;
+      border-color: #2ead4f;
+      background: linear-gradient(100deg, #1ed760, #72ee8f);
+      padding-inline: 16px;
+    }
+
+    .hero {
+      margin-top: 24px;
+      background:
+        radial-gradient(400px 180px at 90% 15%, #1ed7601f, transparent 62%),
+        linear-gradient(140deg, #101b34ed, #13264ce8);
+      border: 1px solid #263a65;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-1);
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 0;
+      min-height: 420px;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      left: -100px;
+      right: -100px;
+      bottom: -120px;
+      height: 260px;
+      background: radial-gradient(ellipse at center, #1ed76030, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-main {
+      padding: 56px 48px 50px;
+      z-index: 1;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #2d8a4f;
+      background: #1ed76017;
+      color: #84f6a3;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      border-radius: 999px;
+    }
+
+    h1 {
+      margin-top: 18px;
+      font-family: "Sora", sans-serif;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      line-height: 0.95;
+      letter-spacing: -1.1px;
+    }
+
+    h1 span {
+      color: var(--primary);
+      text-shadow: 0 0 30px #1ed76055;
+    }
+
+    .hero-sub {
+      margin-top: 14px;
+      max-width: 620px;
+      color: #bed0f5;
+      font-size: 1.08rem;
+      line-height: 1.45;
+    }
+
+    .hero-cta {
+      margin-top: 28px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 11px;
+      padding: 12px 18px;
+      font-size: 0.96rem;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.25s ease, background 0.25s ease;
+    }
+
+    .btn:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+      outline: 2px solid #8cd1ff;
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      color: #021108;
+      background: linear-gradient(100deg, var(--primary), #7fef9a);
+      box-shadow: 0 8px 25px #1ed76044;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px #1ed7604f;
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      border: 1px solid #34518d;
+      background: #112143;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      background: #152952;
+    }
+
+    .hero-side {
+      border-left: 1px solid #283f6e;
+      padding: 28px;
+      display: grid;
+      align-content: center;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(180deg, #0f1a31b3, #0d1932e6);
+    }
+
+    .glance-title {
+      font-family: "Sora", sans-serif;
+      font-size: 1.07rem;
+      color: #dce7ff;
+    }
+
+    .live-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .live-item {
+      border: 1px solid #30497e;
+      background: #132547d9;
+      border-radius: 13px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      animation: popIn 0.5s ease both;
+    }
+
+    .live-item b {
+      display: block;
+      font-size: 0.94rem;
+    }
+
+    .live-item span {
+      color: #aac1f1;
+      font-size: 0.82rem;
+    }
+
+    .live-badge {
+      font-size: 0.72rem;
+      padding: 6px 8px;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border: 1px solid;
+    }
+
+    .live-badge.hot {
+      color: #ffd6c7;
+      border-color: #f17f5f88;
+      background: #ff6f421f;
+    }
+
+    .live-badge.new {
+      color: #c9ffe7;
+      border-color: #39d88b6a;
+      background: #1ed76024;
+    }
+
+    .live-badge.last {
+      color: #ffd882;
+      border-color: #ffbf3c66;
+      background: #ffbf3c1f;
+    }
+
+    .kpis {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 12px;
+    }
+
+    .kpi {
+      border: 1px solid #273c67;
+      background: #0f1c34d9;
+      border-radius: 14px;
+      padding: 14px;
+      min-height: 100px;
+      display: grid;
+      align-content: center;
+    }
+
+    .kpi .num {
+      font-family: "Sora", sans-serif;
+      font-size: 1.65rem;
+      color: var(--primary);
+      line-height: 1;
+    }
+
+    .kpi .label {
+      margin-top: 8px;
+      font-size: 0.79rem;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .layout {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid #273c67;
+      backdrop-filter: blur(6px);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: calc(var(--nav-h) + 14px);
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #99b0de;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .profile {
+      border: 1px solid #32508b;
+      background: linear-gradient(145deg, #102149, #112445);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .profile-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: #042116;
+      background: linear-gradient(135deg, #54f891, #1ed760);
+    }
+
+    .profile small {
+      color: #b7c9ef;
+      font-size: 0.8rem;
+    }
+
+    .profile b {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 2px;
+    }
+
+    .profile-grid {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .mini {
+      border: 1px solid #36548f;
+      border-radius: 10px;
+      padding: 9px;
+      background: #11284bd9;
+    }
+
+    .mini .k {
+      color: #9fb3de;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      font-weight: 700;
+    }
+
+    .mini .v {
+      margin-top: 3px;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .filter-wrap,
+    .quick-actions {
+      border: 1px solid #2c4271;
+      border-radius: 14px;
+      padding: 12px;
+      background: #101f3bd4;
+    }
+
+    .field {
+      margin-bottom: 9px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.69rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #9eb2de;
+      letter-spacing: 0.6px;
+      margin-bottom: 5px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid #395489;
+      background: #0d1b35;
+      color: var(--text);
+      font-size: 0.95rem;
+      padding: 10px 11px;
+      font-family: inherit;
+    }
+
+    .field textarea {
+      min-height: 88px;
+      resize: vertical;
+      line-height: 1.35;
+    }
+
+    .chip-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .chip-btn {
+      border: 1px solid #3a548c;
+      color: #bcd0f5;
+      background: #112446;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-weight: 700;
+      font-size: 0.77rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .chip-btn:hover {
+      border-color: #58a6ff;
+      color: #d5e8ff;
+    }
+
+    .chip-btn.active {
+      color: #052114;
+      background: linear-gradient(90deg, #1ed760, #83f09e);
+      border-color: #1ed760;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .quick-actions {
+      display: grid;
+      gap: 8px;
+    }
+
+    .small-btn {
+      border: 1px solid #38558f;
+      border-radius: 10px;
+      background: #11264b;
+      color: #d6e4ff;
+      padding: 9px;
+      font-size: 0.87rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+
+    .small-btn:hover {
+      transform: translateY(-1px);
+      background: #14305d;
+    }
+
+    .content {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      border: 1px solid #2f466f;
+      background: #11203bb5;
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .tabs {
+      display: inline-flex;
+      border: 1px solid #35518a;
+      background: #0e1b35;
+      border-radius: 999px;
+      overflow: auto;
+    }
+
+    .tab-btn {
+      border: 0;
+      background: transparent;
+      color: #a8bde8;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.84rem;
+      padding: 8px 13px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      color: #03140b;
+      background: linear-gradient(90deg, var(--primary), #7ef09a);
+    }
+
+    .tools {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .tools select,
+    .tools input {
+      border: 1px solid #3a558e;
+      background: #0d1b35;
+      color: var(--text);
+      border-radius: 9px;
+      padding: 8px 9px;
+      font-family: inherit;
+      font-weight: 600;
+      min-width: 118px;
+    }
+
+    .match-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .match {
+      border: 1px solid #2d456f;
+      border-radius: 16px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      background:
+        radial-gradient(420px 100px at 100% 0%, #1ed7601a, transparent 70%),
+        linear-gradient(155deg, #101d38, #0f1d36);
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+      animation: popIn 0.45s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .match:hover {
+      transform: translateY(-2px);
+      border-color: #4c6dad;
+      box-shadow: 0 16px 34px rgba(9, 18, 38, 0.55);
+    }
+
+    .match.hot::before {
+      content: "Urgente";
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-size: 0.64rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #fff;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ff7858, #ff4c23);
+    }
+
+    .date-pill {
+      border: 1px solid #2f4f87;
+      border-radius: 12px;
+      min-width: 82px;
+      padding: 10px 8px;
+      text-align: center;
+      background: #101f3ad1;
+    }
+
+    .date-pill .day {
+      font-family: "Sora", sans-serif;
+      font-size: 1.45rem;
+      color: var(--primary);
+      line-height: 1;
+    }
+
+    .date-pill .month,
+    .date-pill .hour {
+      font-size: 0.73rem;
+      font-weight: 700;
+      color: #a8bee8;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .match-main {
+      min-width: 0;
+    }
+
+    .match-main h3 {
+      font-size: 1.04rem;
+      line-height: 1.2;
+      margin-bottom: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding-right: 6px;
+    }
+
+    .meta {
+      font-size: 0.84rem;
+      color: #afc4ee;
+      margin-bottom: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tag-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 0.68rem;
+      border: 1px solid;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 4px 8px;
+    }
+
+    .tag.level-0 {
+      color: #9fd7ff;
+      background: #57b4ff18;
+      border-color: #57b4ff55;
+    }
+
+    .tag.level-1 {
+      color: #ffe391;
+      background: #ffc94a1a;
+      border-color: #ffc94a5c;
+    }
+
+    .tag.level-2 {
+      color: #ffc7b8;
+      background: #ff7f5b1c;
+      border-color: #ff7f5b63;
+    }
+
+    .tag.pos {
+      color: #e6d5ff;
+      border-color: #b689ff62;
+      background: #9d66f31c;
+    }
+
+    .tag.type {
+      color: #b9ffd3;
+      border-color: #1ed7605a;
+      background: #1ed7601c;
+    }
+
+    .tag.mix {
+      color: #d2e4ff;
+      border-color: #7da8f668;
+      background: #5f8ce31a;
+    }
+
+    .match-side {
+      text-align: right;
+      display: grid;
+      justify-items: end;
+      gap: 6px;
+    }
+
+    .vacancy {
+      font-family: "Sora", sans-serif;
+      font-size: 1.7rem;
+      line-height: 1;
+      color: var(--primary);
+    }
+
+    .vacancy-label {
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      font-size: 0.67rem;
+      color: #9db2dd;
+      font-weight: 700;
+    }
+
+    .score {
+      font-size: 0.74rem;
+      padding: 4px 8px;
+      border: 1px solid #2f8a4e;
+      color: #9efbbd;
+      background: #1ed7601f;
+      border-radius: 999px;
+      font-weight: 800;
+    }
+
+    .match-actions {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+
+    .icon-btn,
+    .join-btn {
+      border: 1px solid #41619f;
+      background: #122547;
+      color: #deebff;
+      border-radius: 9px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      padding: 7px 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .icon-btn:hover,
+    .join-btn:hover {
+      transform: translateY(-1px);
+      background: #18335f;
+    }
+
+    .join-btn.primary {
+      border-color: #2aab4a;
+      color: #052114;
+      background: linear-gradient(100deg, #1ed760, #80f09d);
+    }
+
+    .join-btn.wait {
+      border-color: #cc7d1f;
+      background: #f9a8251f;
+      color: #ffd28e;
+    }
+
+    .joined {
+      border-color: #2aab4a;
+      background: #1ed7601f;
+      color: #9dfcbf;
+      cursor: default;
+    }
+
+    .favorite.active {
+      border-color: #ffbf3c;
+      color: #ffdd92;
+      background: #ffbf3c1f;
+    }
+
+    .empty {
+      border: 1px dashed #3e5a97;
+      border-radius: 16px;
+      padding: 28px 20px;
+      text-align: center;
+      color: #b4c8ef;
+      background: #0f1d38b5;
+    }
+
+    .empty h4 {
+      margin-top: 8px;
+      font-size: 1.12rem;
+      font-family: "Sora", sans-serif;
+      color: #e9f1ff;
+    }
+
+    .product-strip {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .product {
+      border: 1px solid #2e4674;
+      border-radius: 14px;
+      background:
+        radial-gradient(240px 90px at 100% 0%, #1ed7601d, transparent 60%),
+        #0f1d38;
+      padding: 14px;
+      min-height: 165px;
+      display: grid;
+      align-content: space-between;
+      gap: 12px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .product:hover {
+      transform: translateY(-2px);
+      border-color: #4f70b3;
+    }
+
+    .product h4 {
+      font-family: "Sora", sans-serif;
+      font-size: 1rem;
+    }
+
+    .product p {
+      color: #b4c7ee;
+      font-size: 0.88rem;
+      line-height: 1.35;
+    }
+
+    .product button {
+      border: 1px solid #3e5f9b;
+      background: #12264b;
+      color: #e2ecff;
+      border-radius: 9px;
+      padding: 9px 11px;
+      font-weight: 700;
+      cursor: pointer;
+      width: max-content;
+    }
+
+    .footer {
+      margin-top: 22px;
+      border-top: 1px solid #1f3053;
+      padding-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: #92a7d5;
+      font-size: 0.81rem;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      place-items: center;
+      padding: 16px;
+      background: #03070ec9;
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-overlay.open {
+      display: grid;
+    }
+
+    .modal {
+      width: min(100%, 760px);
+      max-height: 92vh;
+      overflow: auto;
+      border-radius: 18px;
+      border: 1px solid #2f4675;
+      background: #0f1c35;
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55);
+      animation: rise 0.28s ease;
+    }
+
+    .modal-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid #28416f;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #0f1c35f2;
+      backdrop-filter: blur(7px);
+    }
+
+    .modal-header h3 {
+      font-family: "Sora", sans-serif;
+      font-size: 1.1rem;
+    }
+
+    .close-btn {
+      width: 35px;
+      height: 35px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 1px solid #3a5a96;
+      background: #112446;
+      color: #cfe0ff;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .status-pill {
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      width: max-content;
+      border: 1px solid;
+    }
+
+    .status-pill.good {
+      color: #b9ffd3;
+      background: #1ed7601f;
+      border-color: #1ed7605f;
+    }
+
+    .status-pill.warn {
+      color: #ffd59d;
+      background: #ffbf3c1f;
+      border-color: #ffbf3c6b;
+    }
+
+    .status-pill.bad {
+      color: #ffc7bc;
+      background: #ff67401f;
+      border-color: #ff67406b;
+    }
+
+    .detail-panel {
+      border: 1px solid #2d456f;
+      border-radius: 13px;
+      padding: 11px;
+      background: #102142;
+    }
+
+    .detail-panel h4 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #a6bbe8;
+      margin-bottom: 6px;
+    }
+
+    .detail-panel p {
+      color: #dfe9ff;
+      line-height: 1.4;
+      font-size: 0.92rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      margin-top: 3px;
+    }
+
+    .toast-wrap {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 110;
+      display: grid;
+      gap: 7px;
+      width: min(360px, calc(100% - 30px));
+    }
+
+    .toast {
+      border: 1px solid #365796;
+      border-left-width: 4px;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #0e1f3f;
+      color: #dbe8ff;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+      animation: slideToast 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .toast.good {
+      border-left-color: var(--primary);
+    }
+
+    .toast.warn {
+      border-left-color: var(--warning);
+    }
+
+    .toast.bad {
+      border-left-color: var(--danger);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes slideToast {
+      from {
+        opacity: 0;
+        transform: translateX(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @media (max-width: 1150px) {
+      .layout {
+        grid-template-columns: 280px 1fr;
+      }
+      .hero-main {
+        padding: 48px 28px;
+      }
+    }
+
+    @media (max-width: 990px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+      .hero-side {
+        border-left: 0;
+        border-top: 1px solid #2d446f;
+      }
+      .kpis {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        position: static;
+      }
+      .product-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .header {
+        padding: 0 10px;
+      }
+      .brand-title {
+        display: none;
+      }
+      .top-nav {
+        display: none;
+      }
+      .shell {
+        padding: 0 10px 68px;
+      }
+      .hero-main {
+        padding: 30px 14px;
+      }
+      .hero-side {
+        padding: 14px;
+      }
+      .match {
+        grid-template-columns: auto 1fr;
+      }
+      .match-side {
+        grid-column: 1 / -1;
+        justify-items: start;
+        text-align: left;
+      }
+      .toolbar {
+        padding: 9px;
+      }
+      .modal-grid {
+        grid-template-columns: 1fr;
+      }
+      .header-right {
+        gap: 6px;
+      }
+      .header-action {
+        padding-inline: 11px;
+        font-size: 0.84rem;
+      }
+      .lang button {
+        padding: 6px 8px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <header class="header">
+    <a class="brand" href="#" aria-label="Resenha Futebol, voltar ao topo">
+      <svg class="logo-ball" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <circle cx="20" cy="20" r="18" fill="#1ed760" stroke="#159a44" stroke-width="2"></circle>
+        <path d="M20 7l4 6h-8l4-6zm10 8l4 5-4 5-3-5 3-5zM10 15l-4 5 4 5 3-5-3-5zm10 18l-4-6h8l-4 6z" fill="#0c4f26"></path>
+      </svg>
+      <div class="brand-title">Resenha <strong>Futebol</strong></div>
+    </a>
 
-<header>
-  <div class="logo">
-    <svg class="logo-ball" viewBox="0 0 28 28" fill="none">
-      <circle cx="14" cy="14" r="13" fill="#00C853" stroke="#007A33" stroke-width="1.5"/>
-      <path d="M14 5 L17 10 L14 10 L11 10 Z" fill="#007A33" opacity="0.8"/>
-      <path d="M20 10 L23 14 L20 18 L18 14 Z" fill="#007A33" opacity="0.8"/>
-      <path d="M8 10 L5 14 L8 18 L10 14 Z" fill="#007A33" opacity="0.8"/>
-      <path d="M14 23 L11 18 L14 18 L17 18 Z" fill="#007A33" opacity="0.8"/>
-    </svg>
-    Resenha<span>Futebol</span>
-  </div>
+    <nav class="top-nav" aria-label="Navegação principal">
+      <button class="active" data-view-btn="descobrir" data-i18n="nav_find">Buscar Racha</button>
+      <button data-view-btn="meus" data-i18n="nav_my">Meus Jogos</button>
+      <button data-view-btn="favoritos" data-i18n="nav_fav">Favoritos</button>
+    </nav>
 
-  <nav>
-    <button class="nav-btn active" onclick="mudarAba('partidas')" data-i18n="nav_buscar">🔍 Buscar Racha</button>
-    <button class="nav-btn" onclick="mudarAba('meus')" data-i18n="nav_meus">⚽ Meus Jogos</button>
-  </nav>
-
-  <div class="header-right">
-    <div class="lang-selector">
-      <button class="lang-btn active" onclick="setLang('pt')">PT</button>
-      <button class="lang-btn" onclick="setLang('en')">EN <span class="lang-spinner"></span></button>
-      <button class="lang-btn" onclick="setLang('es')">ES <span class="lang-spinner"></span></button>
+    <div class="header-right">
+      <div class="lang" aria-label="Seletor de idioma">
+        <button class="active" data-lang="pt">PT</button>
+        <button data-lang="en">EN</button>
+        <button data-lang="es">ES</button>
+      </div>
+      <button class="header-action" id="btnOpenPublish" data-i18n="btn_publish">+ Anunciar Racha</button>
     </div>
-    <button class="btn-anunciar" onclick="abrirModalAnunciar()" data-i18n="btn_anunciar">+ Anunciar Racha</button>
-  </div>
-</header>
+  </header>
 
-<section class="hero">
-  <div class="hero-tag" data-i18n="hero_tag">⚽ A maior rede de racha do Brasil</div>
-  <h1><span data-i18n="hero_h1_linha1">Procurou</span><br><em data-i18n="hero_h1_linha2">Achou</em></h1>
-  <p data-i18n="hero_p">Filtra por cidade, dia, horário e posição — e entra no jogo.</p>
-</section>
-
-<div class="stats-bar">
-  <div class="stat">
-    <div class="stat-num">247</div>
-    <div class="stat-label" data-i18n="stat_jogos">Jogos hoje</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num">1.843</div>
-    <div class="stat-label" data-i18n="stat_boleiros">Boleiros ativos</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num">89</div>
-    <div class="stat-label" data-i18n="stat_cidades">Cidades</div>
-  </div>
-</div>
-
-<section class="filter-section">
-  <div class="filter-card">
-    <div class="filter-title" data-i18n="filter_title">🎯 Filtrar partidas</div>
-    <div class="filter-grid">
-      <div class="filter-group">
-        <label data-i18n="label_cidade">Cidade</label>
-        <select id="f-cidade">
-          <option value="" data-i18n="opt_todas_cidades">Todas as cidades</option>
-          <option>São Paulo - SP</option>
-          <option>Campinas - SP</option>
-          <option>Piracicaba - SP</option>
-          <option>Ribeirão Preto - SP</option>
-          <option>Rio de Janeiro - RJ</option>
-          <option>Belo Horizonte - MG</option>
-          <option>Curitiba - PR</option>
-          <option>Porto Alegre - RS</option>
-          <option>Brasília - DF</option>
-          <option>Salvador - BA</option>
-          <option>Fortaleza - CE</option>
-          <option>Recife - PE</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label data-i18n="label_data">Data</label>
-        <input type="date" id="f-data">
-      </div>
-      <div class="filter-group">
-        <label data-i18n="label_horario">Horário</label>
-        <select id="f-horario">
-          <option value="" data-i18n="opt_qualquer_horario">Qualquer horário</option>
-          <option data-i18n="opt_manha">Manhã (até 12h)</option>
-          <option data-i18n="opt_tarde">Tarde (12h–18h)</option>
-          <option data-i18n="opt_noite">Noite (após 18h)</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label data-i18n="label_nivel">Nível</label>
-        <select id="f-nivel">
-          <option value="" data-i18n="opt_todos_niveis">Todos os níveis</option>
-          <option data-i18n="nivel_basico">Básico</option>
-          <option data-i18n="nivel_intermediario">Intermediário</option>
-          <option data-i18n="nivel_avancado">Avançado</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="filter-title" style="margin-top:0.5rem" data-i18n="filter_pos_title">🦵 Posição procurada</div>
-    <div class="posicoes-grid" id="posicoes-filtro">
-      <button class="pos-btn" onclick="togglePos(this)" data-pos="Goleiro" data-i18n="pos_goleiro">Goleiro</button>
-      <button class="pos-btn" onclick="togglePos(this)" data-pos="Zagueiro" data-i18n="pos_zagueiro">Zagueiro</button>
-      <button class="pos-btn" onclick="togglePos(this)" data-pos="Lateral" data-i18n="pos_lateral">Lateral</button>
-      <button class="pos-btn" onclick="togglePos(this)" data-pos="Volante" data-i18n="pos_volante">Volante</button>
-      <button class="pos-btn" onclick="togglePos(this)" data-pos="Meia" data-i18n="pos_meia">Meia</button>
-      <button class="pos-btn" onclick="togglePos(this)" data-pos="Ponta" data-i18n="pos_ponta">Ponta</button>
-      <button class="pos-btn" onclick="togglePos(this)" data-pos="Centroavante" data-i18n="pos_centroavante">Centroavante</button>
-      <button class="pos-btn" onclick="togglePos(this)" data-pos="Qualquer" data-i18n="pos_qualquer">Qualquer</button>
-    </div>
-
-    <div class="filter-actions">
-      <button class="btn-limpar" onclick="limparFiltros()" data-i18n="btn_limpar">Limpar</button>
-      <button class="btn-buscar" onclick="buscar()" data-i18n="btn_buscar">🔍 Buscar Partidas</button>
-    </div>
-  </div>
-</section>
-
-<div class="campo-divider">
-  <div class="campo-line"></div>
-  <div class="campo-center" data-i18n="divider_text">Partidas disponíveis</div>
-  <div class="campo-line"></div>
-</div>
-
-<section class="tabs-section">
-  <div class="tabs">
-    <button class="tab active" onclick="mudarTab(this,'todos')" data-i18n="tab_todos">Todos</button>
-    <button class="tab" onclick="mudarTab(this,'hoje')" data-i18n="tab_hoje">Hoje</button>
-    <button class="tab" onclick="mudarTab(this,'semana')" data-i18n="tab_semana">Esta semana</button>
-    <button class="tab" onclick="mudarTab(this,'urgente')" data-i18n="tab_urgente">Urgentes</button>
-  </div>
-
-  <div class="result-info">
-    <span class="result-count">
-      <strong id="total-count">8</strong> <span data-i18n="result_label">partidas encontradas</span>
-    </span>
-    <select class="sort-select" onchange="ordenar(this.value)">
-      <option value="data" data-i18n="sort_data">Mais próximas</option>
-      <option value="vagas" data-i18n="sort_vagas">Mais vagas</option>
-      <option value="nivel" data-i18n="sort_nivel">Por nível</option>
-    </select>
-  </div>
-
-  <div class="cards-list" id="cards-container"></div>
-</section>
-
-<!-- MODAL ANUNCIAR -->
-<div class="modal-overlay" id="modal-anunciar">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" data-i18n="modal_anunciar_title">⚽ Anunciar Racha</div>
-      <button class="modal-close" onclick="fecharModal('modal-anunciar')">✕</button>
-    </div>
-    <div class="form-grid">
-      <div class="form-group full">
-        <label data-i18n="form_nome">Nome do jogo / apelido</label>
-        <input type="text" id="an-nome" placeholder="Ex: Racha da Praça da Sé">
-      </div>
-      <div class="form-group">
-        <label data-i18n="label_cidade">Cidade</label>
-        <select id="an-cidade">
-          <option>São Paulo - SP</option>
-          <option>Campinas - SP</option>
-          <option selected>Piracicaba - SP</option>
-          <option>Ribeirão Preto - SP</option>
-          <option>Rio de Janeiro - RJ</option>
-          <option>Belo Horizonte - MG</option>
-          <option>Curitiba - PR</option>
-          <option>Porto Alegre - RS</option>
-          <option>Brasília - DF</option>
-          <option>Salvador - BA</option>
-          <option>Fortaleza - CE</option>
-          <option>Recife - PE</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label data-i18n="label_nivel">Nível</label>
-        <select id="an-nivel">
-          <option data-i18n="nivel_basico">Básico</option>
-          <option data-i18n="nivel_intermediario">Intermediário</option>
-          <option data-i18n="nivel_avancado">Avançado</option>
-        </select>
-      </div>
-      <div class="form-group full">
-        <label data-i18n="form_local">Local / endereço</label>
-        <input type="text" id="an-local" placeholder="Ex: Campo do Parque do Povo">
-      </div>
-      <div class="form-group">
-        <label data-i18n="label_data">Data</label>
-        <input type="date" id="an-data">
-      </div>
-      <div class="form-group">
-        <label data-i18n="label_horario">Horário</label>
-        <input type="time" id="an-hora">
-      </div>
-      <div class="form-group">
-        <label data-i18n="form_tipo">Tipo de jogo</label>
-        <select id="an-tipo">
-          <option>Society</option>
-          <option>Futsal</option>
-          <option data-i18n="tipo_campo">Campo</option>
-          <option data-i18n="tipo_aberta">Pelada aberta</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label data-i18n="form_vagas">Vagas disponíveis</label>
-        <input type="number" id="an-vagas" min="1" max="22" value="3">
-      </div>
-      <div class="form-group full">
-        <label data-i18n="form_posicoes">Posições que precisam</label>
-        <div class="posicoes-form" id="posicoes-form">
-          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Goleiro" data-i18n="pos_goleiro">Goleiro</button>
-          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Zagueiro" data-i18n="pos_zagueiro">Zagueiro</button>
-          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Lateral" data-i18n="pos_lateral">Lateral</button>
-          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Volante" data-i18n="pos_volante">Volante</button>
-          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Meia" data-i18n="pos_meia">Meia</button>
-          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Ponta" data-i18n="pos_ponta">Ponta</button>
-          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Centroavante" data-i18n="pos_centroavante">Centroavante</button>
-          <button class="pos-form-btn" onclick="togglePosForm(this)" data-pos="Qualquer" data-i18n="pos_qualquer">Qualquer</button>
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-main">
+        <div class="chip" data-i18n="hero_chip">Plataforma Inteligente de Racha</div>
+        <h1><span data-i18n="hero_title_a">Acha, fecha</span> <br /><span data-i18n="hero_title_b">e joga sem atrito.</span></h1>
+        <p class="hero-sub" data-i18n="hero_sub">
+          Da descoberta ao pós-jogo: filtros avançados, combinação por perfil, lista de espera automática, confirmação instantânea e novos produtos para escalar sua comunidade.
+        </p>
+        <div class="hero-cta">
+          <button class="btn btn-primary" id="btnHeroFind" data-i18n="hero_btn_find">Encontrar Partidas Agora</button>
+          <button class="btn btn-secondary" id="btnHeroTour" data-i18n="hero_btn_tour">Ver Novidades do Produto</button>
         </div>
       </div>
-      <div class="form-group full">
-        <label data-i18n="form_desc">Descrição / observações</label>
-        <textarea id="an-desc" rows="3" placeholder="Ex: Todo sábado! Trazemos bola, só falta você."></textarea>
+      <aside class="hero-side" aria-label="Painel de atividade ao vivo">
+        <h3 class="glance-title" data-i18n="live_title">Movimento ao vivo</h3>
+        <div class="live-list" id="liveList"></div>
+      </aside>
+    </section>
+
+    <section class="kpis" id="kpis" aria-label="Indicadores da plataforma"></section>
+
+    <section class="layout">
+      <aside class="sidebar card">
+        <div>
+          <div class="section-title" data-i18n="profile_title">Seu Perfil de Jogo</div>
+          <div class="profile">
+            <div class="profile-top">
+              <div class="avatar" id="profileAvatar">JB</div>
+              <div>
+                <b id="profileName">João Boleiro</b>
+                <small id="profileCity">São Paulo - SP</small>
+              </div>
+            </div>
+            <div class="profile-grid">
+              <div class="mini">
+                <div class="k" data-i18n="profile_level">Nível</div>
+                <div class="v" id="profileLevel">Intermediário</div>
+              </div>
+              <div class="mini">
+                <div class="k" data-i18n="profile_role">Posição</div>
+                <div class="v" id="profilePos">Meia</div>
+              </div>
+              <div class="mini">
+                <div class="k" data-i18n="profile_rep">Reputação</div>
+                <div class="v" id="profileRep">4.8/5</div>
+              </div>
+              <div class="mini">
+                <div class="k" data-i18n="profile_presence">Presença</div>
+                <div class="v" id="profilePresence">96%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-wrap">
+          <div class="section-title" data-i18n="filter_title">Filtros inteligentes</div>
+          <div class="field">
+            <label for="f-city" data-i18n="label_city">Cidade</label>
+            <select id="f-city"></select>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="f-date" data-i18n="label_date">Data</label>
+              <input id="f-date" type="date" />
+            </div>
+            <div class="field">
+              <label for="f-time" data-i18n="label_time">Janela</label>
+              <select id="f-time"></select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="f-level" data-i18n="label_level">Nível</label>
+              <select id="f-level"></select>
+            </div>
+            <div class="field">
+              <label for="f-type" data-i18n="label_type">Tipo</label>
+              <select id="f-type"></select>
+            </div>
+          </div>
+          <div class="field">
+            <label data-i18n="label_positions">Posições procuradas</label>
+            <div class="chip-grid" id="filterPositions"></div>
+          </div>
+          <div class="row">
+            <button class="btn btn-secondary" id="btnClearFilters" data-i18n="btn_clear">Limpar</button>
+            <button class="btn btn-primary" id="btnApplyFilters" data-i18n="btn_search">Buscar</button>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <div class="section-title" data-i18n="quick_title">Ferramentas rápidas</div>
+          <button class="small-btn" id="btnFillProfile" data-i18n="quick_profile">Atualizar perfil para melhorar recomendações</button>
+          <button class="small-btn" id="btnNotify" data-i18n="quick_notify">Ativar alertas por posição e região</button>
+          <button class="small-btn" id="btnCalendar" data-i18n="quick_calendar">Exportar próximos jogos para calendário</button>
+        </div>
+      </aside>
+
+      <section class="content card">
+        <div class="toolbar">
+          <div class="tabs" role="tablist" aria-label="Categorias de partidas">
+            <button class="tab-btn active" data-tab="all" data-i18n="tab_all">Todas</button>
+            <button class="tab-btn" data-tab="today" data-i18n="tab_today">Hoje</button>
+            <button class="tab-btn" data-tab="week" data-i18n="tab_week">Semana</button>
+            <button class="tab-btn" data-tab="urgent" data-i18n="tab_urgent">Urgentes</button>
+            <button class="tab-btn" data-tab="recommended" data-i18n="tab_recommended">Para você</button>
+          </div>
+          <div class="tools">
+            <label class="sr-only" for="searchInput">Buscar por nome</label>
+            <input id="searchInput" type="search" placeholder="Buscar por nome ou local" />
+            <label class="sr-only" for="sortBy">Ordenar por</label>
+            <select id="sortBy"></select>
+          </div>
+        </div>
+
+        <div class="match-list" id="matchList"></div>
+
+        <section class="product-strip" aria-label="Novos produtos">
+          <article class="product">
+            <div>
+              <h4 data-i18n="product_1_title">Resenha Pro Organizador</h4>
+              <p data-i18n="product_1_desc">Gestão de lista, cobrança, recorrência de rachas, confirmação automática e painel de no-show.</p>
+            </div>
+            <button data-product="1" data-i18n="product_btn">Quero conhecer</button>
+          </article>
+          <article class="product">
+            <div>
+              <h4 data-i18n="product_2_title">Resenha Corporate</h4>
+              <p data-i18n="product_2_desc">Campeonatos internos para empresas com tabela, ranking, destaques e calendário unificado.</p>
+            </div>
+            <button data-product="2" data-i18n="product_btn">Quero conhecer</button>
+          </article>
+          <article class="product">
+            <div>
+              <h4 data-i18n="product_3_title">Resenha Arena Parceira</h4>
+              <p data-i18n="product_3_desc">Conecte sua arena, abra horários ociosos e receba times prontos com ocupação otimizada.</p>
+            </div>
+            <button data-product="3" data-i18n="product_btn">Quero conhecer</button>
+          </article>
+        </section>
+      </section>
+    </section>
+
+    <footer class="footer">
+      <span data-i18n="footer_text">Resenha Futebol • Produto de ponta para organizar e jogar sem fricção.</span>
+      <span id="clock"></span>
+    </footer>
+  </main>
+
+  <div class="modal-overlay" id="publishModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="publishTitle">
+      <div class="modal-header">
+        <h3 id="publishTitle" data-i18n="publish_title">Anunciar novo racha</h3>
+        <button class="close-btn" data-close-modal="publishModal" aria-label="Fechar">✕</button>
       </div>
-    </div>
-    <button class="btn-publicar" onclick="publicarJogo()" data-i18n="btn_publicar">🚀 Publicar Racha</button>
-  </div>
-</div>
-
-<!-- MODAL DETALHE -->
-<div class="modal-overlay" id="modal-detalhe">
-  <div class="modal">
-    <div class="modal-header" style="margin-bottom:0">
-      <div></div>
-      <button class="modal-close" onclick="fecharModal('modal-detalhe')">✕</button>
-    </div>
-    <div id="modal-detalhe-body"></div>
-  </div>
-</div>
-
-<!-- OVERLAY TRADUÇÃO -->
-<div class="translate-overlay" id="translate-overlay">
-  <div class="translate-spinner"></div>
-  <div class="translate-msg" id="translate-msg">Traduzindo...</div>
-</div>
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<script>
-// ===================== TEXTOS BASE (sempre em PT) =====================
-// Todos os textos que aparecem na interface estão aqui.
-// Quando você adicionar algo novo no HTML, basta:
-// 1. Colocar data-i18n="minha_chave" no elemento
-// 2. Adicionar a chave e o texto em PT aqui embaixo
-const textosPT = {
-  nav_buscar:          "Buscar Racha",
-  nav_meus:            "Meus Jogos",
-  btn_anunciar:        "+ Anunciar Racha",
-  hero_tag:            "A maior rede de racha do Brasil",
-  hero_h1_linha1:      "Procurou",
-  hero_h1_linha2:      "Achou",
-  hero_p:              "Filtra por cidade, dia, horário e posição — e entra no jogo.",
-  stat_jogos:          "Jogos hoje",
-  stat_boleiros:       "Boleiros ativos",
-  stat_cidades:        "Cidades",
-  filter_title:        "Filtrar partidas",
-  filter_pos_title:    "Posição procurada",
-  label_cidade:        "Cidade",
-  label_data:          "Data",
-  label_horario:       "Horário",
-  label_nivel:         "Nível",
-  opt_todas_cidades:   "Todas as cidades",
-  opt_qualquer_horario:"Qualquer horário",
-  opt_manha:           "Manhã (até 12h)",
-  opt_tarde:           "Tarde (12h–18h)",
-  opt_noite:           "Noite (após 18h)",
-  opt_todos_niveis:    "Todos os níveis",
-  nivel_basico:        "Básico",
-  nivel_intermediario: "Intermediário",
-  nivel_avancado:      "Avançado",
-  pos_goleiro:         "Goleiro",
-  pos_zagueiro:        "Zagueiro",
-  pos_lateral:         "Lateral",
-  pos_volante:         "Volante",
-  pos_meia:            "Meia",
-  pos_ponta:           "Ponta",
-  pos_centroavante:    "Centroavante",
-  pos_qualquer:        "Qualquer",
-  btn_limpar:          "Limpar",
-  btn_buscar:          "Buscar Partidas",
-  divider_text:        "Partidas disponíveis",
-  tab_todos:           "Todos",
-  tab_hoje:            "Hoje",
-  tab_semana:          "Esta semana",
-  tab_urgente:         "Urgentes",
-  result_label:        "partidas encontradas",
-  sort_data:           "Mais próximas",
-  sort_vagas:          "Mais vagas",
-  sort_nivel:          "Por nível",
-  modal_anunciar_title:"Anunciar Racha",
-  form_nome:           "Nome do jogo / apelido",
-  form_local:          "Local / endereço",
-  form_tipo:           "Tipo de jogo",
-  tipo_campo:          "Campo",
-  tipo_aberta:         "Pelada aberta",
-  form_vagas:          "Vagas disponíveis",
-  form_posicoes:       "Posições que precisam",
-  form_desc:           "Descrição / observações",
-  btn_publicar:        "Publicar Racha",
-  detalhe_horario:     "Horário",
-  detalhe_vagas:       "Vagas",
-  detalhe_total:       "Total jogadores",
-  detalhe_lotado:      "Lotado",
-  detalhe_posicoes:    "Posições procuradas",
-  detalhe_contato:     "Contato",
-  btn_quero_jogar:     "Quero Jogar!",
-  btn_vagas_esgotadas: "Vagas Esgotadas",
-  btn_entrar:          "Entrar",
-  btn_lotado:          "Lotado",
-  badge_urgente:       "urgente",
-  vagas_label:         "vagas",
-  toast_encontrados:   "partida(s) encontrada(s)!",
-  toast_publicado:     "Racha publicado com sucesso!",
-  toast_campos:        "Preencha todos os campos obrigatórios!",
-  toast_sem_jogos:     "Você ainda não anunciou nenhum racha!",
-  toast_entrou:        "Você entrou no racha! Boa pelada!",
-  empty_title:         "Nenhuma partida encontrada. Que tal anunciar o seu racha?",
-  traduzindo:          "Traduzindo a página...",
-};
-
-// ===================== CACHE DE TRADUÇÕES =====================
-// Guarda as traduções já feitas pra não chamar a API de novo
-const cache = {
-  pt: { ...textosPT }
-  // en e es serão preenchidos automaticamente pela API
-};
-
-let currentLang = 'pt';
-let traducaoAtual = { ...textosPT };
-
-// ===================== API MYMEMORY =====================
-async function traduzirTexto(texto, destino) {
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(texto)}&langpair=pt|${destino}`;
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-    if (data.responseStatus === 200) {
-      return data.responseData.translatedText;
-    }
-    return texto; // fallback: retorna o original se der erro
-  } catch {
-    return texto;
-  }
-}
-
-// Traduz todas as chaves de uma vez, em lotes pra não sobrecarregar a API
-async function traduzirTudo(destino) {
-  // Se já temos no cache, usa direto
-  if (cache[destino]) {
-    return cache[destino];
-  }
-
-  const chaves = Object.keys(textosPT);
-  const resultado = {};
-
-  // Processa em lotes de 5 pra não travar o navegador
-  const tamanhoLote = 5;
-  for (let i = 0; i < chaves.length; i += tamanhoLote) {
-    const lote = chaves.slice(i, i + tamanhoLote);
-    const promises = lote.map(chave =>
-      traduzirTexto(textosPT[chave], destino).then(tr => ({ chave, tr }))
-    );
-    const respostas = await Promise.all(promises);
-    respostas.forEach(({ chave, tr }) => {
-      resultado[chave] = tr;
-    });
-  }
-
-  cache[destino] = resultado;
-  return resultado;
-}
-
-// ===================== APLICAR TRADUÇÃO NA TELA =====================
-function aplicarTraducao(traducoes) {
-  traducaoAtual = traducoes;
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const chave = el.getAttribute('data-i18n');
-    if (traducoes[chave] !== undefined) {
-      el.textContent = traducoes[chave];
-    }
-  });
-  aplicarTab(); // re-renderiza os cards com os novos textos
-}
-
-// Atalho pra pegar tradução atual
-function t(chave) {
-  return traducaoAtual[chave] || textosPT[chave] || chave;
-}
-
-// ===================== TROCAR IDIOMA =====================
-async function setLang(lang) {
-  if (lang === currentLang) return;
-
-  const botao = document.querySelector(`.lang-btn:nth-child(${lang === 'pt' ? 1 : lang === 'en' ? 2 : 3})`);
-
-  if (lang === 'pt') {
-    // PT não precisa de API — usa os textos originais
-    currentLang = 'pt';
-    document.documentElement.lang = 'pt-BR';
-    atualizarBotoesLang('pt');
-    aplicarTraducao(textosPT);
-    return;
-  }
-
-  // Mostra loading no botão e no overlay
-  if (botao) {
-    botao.disabled = true;
-    botao.classList.add('loading');
-  }
-
-  const destino = lang === 'en' ? 'en' : 'es';
-  const msgOverlay = lang === 'en' ? 'Translating...' : 'Traduciendo...';
-
-  // Se ainda não tem no cache, mostra o overlay de carregamento
-  if (!cache[lang]) {
-    document.getElementById('translate-msg').textContent = t('traduzindo');
-    document.getElementById('translate-overlay').classList.add('show');
-  }
-
-  try {
-    const traducoes = await traduzirTudo(destino);
-    currentLang = lang;
-    document.documentElement.lang = lang;
-    atualizarBotoesLang(lang);
-    aplicarTraducao(traducoes);
-  } catch (err) {
-    mostrarToast('Erro ao traduzir. Verifique sua conexão.', true);
-  } finally {
-    document.getElementById('translate-overlay').classList.remove('show');
-    if (botao) {
-      botao.disabled = false;
-      botao.classList.remove('loading');
-    }
-  }
-}
-
-function atualizarBotoesLang(lang) {
-  document.querySelectorAll('.lang-btn').forEach(b => {
-    const langDoBotao = b.textContent.trim().replace(/\s+.*/, '').toLowerCase();
-    b.classList.toggle('active', langDoBotao === lang);
-  });
-}
-
-// ===================== DATA =====================
-const hoje = new Date();
-function dataFormatada(diasAFrente, hora) {
-  const d = new Date(hoje);
-  d.setDate(d.getDate() + diasAFrente);
-  return { obj: d, str: d.toISOString().split('T')[0], hora };
-}
-
-let jogos = [
-  { id:1, nome:"Racha da Sé", cidade:"São Paulo - SP", local:"Campo Sintético do Anhangabaú", data:dataFormatada(0,"19:00"), nivel:"Intermediário", tipo:"Society", vagas:3, totalVagas:14, posicoes:["Meia","Ponta","Centroavante"], desc:"Racha semanal firme! Galera comprometida, jogo limpo. Trazemos bola e coletes.", urgente:false, contato:"(11) 9 9876-5432" },
-  { id:2, nome:"Pelada Beira Rio", cidade:"Piracicaba - SP", local:"Campo do Parque do Povo, Av. Beira Rio", data:dataFormatada(0,"07:30"), nivel:"Básico", tipo:"Pelada aberta", vagas:5, totalVagas:22, posicoes:["Goleiro","Zagueiro","Qualquer"], desc:"Pelada aberta todo sábado de manhã. Nível tranquilo, pessoal descontraído. Aparece que tem vaga!", urgente:true, contato:"(19) 9 9123-4567" },
-  { id:3, nome:"Copa Jardim America", cidade:"Campinas - SP", local:"Arena Campos — Rua Barão de Itapura", data:dataFormatada(1,"20:00"), nivel:"Avançado", tipo:"Society", vagas:1, totalVagas:14, posicoes:["Goleiro"], desc:"Falta 1 goleiro para a rodada de amanhã. Pessoal joga sério, mas clima é ótimo. Só não pode falhar.", urgente:true, contato:"(19) 9 8765-4321" },
-  { id:4, nome:"Racha da Vila", cidade:"São Paulo - SP", local:"Campo Sintético Vila Madalena", data:dataFormatada(2,"18:00"), nivel:"Intermediário", tipo:"Futsal", vagas:4, totalVagas:10, posicoes:["Lateral","Volante","Meia"], desc:"Racha de futsal nível intermediário. Pessoal unido, jogo técnico. Bem-vindo quem gosta de dar bola.", urgente:false, contato:"(11) 9 7654-3210" },
-  { id:5, nome:"Guerreiros do Sul", cidade:"Porto Alegre - RS", local:"Campo do Menino Deus — Rua Cel. Genuíno", data:dataFormatada(3,"09:00"), nivel:"Básico", tipo:"Campo", vagas:8, totalVagas:22, posicoes:["Zagueiro","Lateral","Volante","Centroavante"], desc:"Partida no campo de grama natural! Domingão clássico com galera boa. Muitas vagas ainda.", urgente:false, contato:"(51) 9 9876-1234" },
-  { id:6, nome:"Fut Noturno Lapa", cidade:"São Paulo - SP", local:"Arena FutNight Lapa — R. Catão", data:dataFormatada(4,"22:00"), nivel:"Intermediário", tipo:"Society", vagas:0, totalVagas:14, posicoes:[], desc:"Partida noturna tradicional. Vagas esgotadas, mas cadastra-se na lista de espera!", urgente:false, contato:"(11) 9 5432-1098" },
-  { id:7, nome:"Racha da Praça", cidade:"Ribeirão Preto - SP", local:"Campo da Praça do Coração — Centro", data:dataFormatada(5,"16:00"), nivel:"Básico", tipo:"Pelada aberta", vagas:6, totalVagas:22, posicoes:["Qualquer"], desc:"Clássico da cidade! Já tem 10 anos de racha. Todo mundo joga. Traz sua chuteira e boa vontade.", urgente:false, contato:"(16) 9 8765-5678" },
-  { id:8, nome:"Elite FC Futsal", cidade:"Belo Horizonte - MG", local:"CT Elite Sports — Savassi", data:dataFormatada(6,"20:30"), nivel:"Avançado", tipo:"Futsal", vagas:2, totalVagas:10, posicoes:["Ponta","Fixo"], desc:"Futsal de alto nível, galera ex-federação. Só pra quem joga mesmo. Jogo limpo e rápido.", urgente:false, contato:"(31) 9 9999-8888" }
-];
-
-let tabAtual = 'todos';
-let jogosFiltrados = [...jogos];
-
-// ===================== RENDER =====================
-function getNivelClass(nivel) {
-  if (nivel === 'Básico') return 'tag-nivel-basico';
-  if (nivel === 'Intermediário') return 'tag-nivel-intermediario';
-  if (nivel === 'Avançado') return 'tag-nivel-avancado';
-  return 'tag-nivel-basico';
-}
-
-function getNivelLabel(nivel) {
-  const map = { 'Básico':'nivel_basico', 'Intermediário':'nivel_intermediario', 'Avançado':'nivel_avancado' };
-  return t(map[nivel] || 'nivel_basico');
-}
-
-function getPosLabel(pos) {
-  const map = {
-    'Goleiro':'pos_goleiro','Zagueiro':'pos_zagueiro','Lateral':'pos_lateral',
-    'Volante':'pos_volante','Meia':'pos_meia','Ponta':'pos_ponta',
-    'Centroavante':'pos_centroavante','Qualquer':'pos_qualquer'
-  };
-  return map[pos] ? t(map[pos]) : pos;
-}
-
-function renderCards(lista) {
-  const container = document.getElementById('cards-container');
-  document.getElementById('total-count').textContent = lista.length;
-
-  if (lista.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-ball">⚽</div>
-        <h3>${t('empty_title')}</h3>
-      </div>`;
-    return;
-  }
-
-  container.innerHTML = lista.map((j, i) => {
-    const cheio = j.vagas === 0;
-    const tagNivel = getNivelClass(j.nivel);
-    const nivelLabel = getNivelLabel(j.nivel);
-    const posStr = j.posicoes.length
-      ? j.posicoes.slice(0,2).map(p => getPosLabel(p)).join(', ') + (j.posicoes.length > 2 ? '...' : '')
-      : '';
-
-    return `
-    <div class="jogo-card ${j.urgente?'urgente':''} ${cheio?'cheio':''}"
-         style="animation-delay:${i*0.05}s"
-         onclick="abrirDetalhe(${j.id})">
-      ${j.urgente ? `<span class="badge-urgente">${t('badge_urgente')}</span>` : ''}
-      <div class="card-data">
-        <div class="card-dia">${j.data.obj.getDate().toString().padStart(2,'0')}</div>
-        <div class="card-mes">${j.data.obj.toLocaleString('pt-BR',{month:'short'}).replace('.','')}</div>
-        <div class="card-hora">${j.data.hora}</div>
-      </div>
-      <div class="card-info">
-        <div class="card-titulo">${j.nome}</div>
-        <div class="card-local">📍 ${j.local} &bull; ${j.cidade}</div>
-        <div class="card-tags">
-          <span class="tag ${tagNivel}">${nivelLabel}</span>
-          <span class="tag tag-tipo">${j.tipo}</span>
-          ${posStr ? `<span class="tag tag-pos">🦵 ${posStr}</span>` : ''}
+      <div class="modal-body">
+        <div class="modal-grid">
+          <div class="field full">
+            <label for="p-name" data-i18n="label_name">Nome do jogo</label>
+            <input id="p-name" type="text" placeholder="Ex: Racha da Vila das 20h" />
+          </div>
+          <div class="field">
+            <label for="p-city" data-i18n="label_city">Cidade</label>
+            <select id="p-city"></select>
+          </div>
+          <div class="field">
+            <label for="p-place" data-i18n="label_place">Local</label>
+            <input id="p-place" type="text" placeholder="Arena, rua e bairro" />
+          </div>
+          <div class="field">
+            <label for="p-date" data-i18n="label_date">Data</label>
+            <input id="p-date" type="date" />
+          </div>
+          <div class="field">
+            <label for="p-hour" data-i18n="label_hour">Horário</label>
+            <input id="p-hour" type="time" />
+          </div>
+          <div class="field">
+            <label for="p-level" data-i18n="label_level">Nível</label>
+            <select id="p-level"></select>
+          </div>
+          <div class="field">
+            <label for="p-type" data-i18n="label_type">Tipo</label>
+            <select id="p-type"></select>
+          </div>
+          <div class="field">
+            <label for="p-vac" data-i18n="label_vacancies">Vagas</label>
+            <input id="p-vac" type="number" min="1" max="30" value="4" />
+          </div>
+          <div class="field">
+            <label for="p-contact" data-i18n="label_contact">Contato</label>
+            <input id="p-contact" type="text" placeholder="WhatsApp ou @instagram" />
+          </div>
+          <div class="field full">
+            <label data-i18n="label_positions">Posições procuradas</label>
+            <div class="chip-grid" id="publishPositions"></div>
+          </div>
+          <div class="field full">
+            <label for="p-desc" data-i18n="label_desc">Descrição</label>
+            <textarea id="p-desc" placeholder="Detalhes sobre o clima do jogo, regras, materiais e pontualidade."></textarea>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" data-close-modal="publishModal" data-i18n="btn_cancel">Cancelar</button>
+          <button class="btn btn-primary" id="btnPublishNow" data-i18n="btn_publish_now">Publicar agora</button>
         </div>
       </div>
-      <div class="card-vagas">
-        <div class="vagas-num" style="${cheio?'color:var(--texto-muted)':''}">
-          ${cheio ? '—' : j.vagas}
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="detailModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <div class="modal-header">
+        <h3 id="detailTitle" data-i18n="detail_title">Detalhes da partida</h3>
+        <button class="close-btn" data-close-modal="detailModal" aria-label="Fechar">✕</button>
+      </div>
+      <div class="modal-body" id="detailBody"></div>
+    </div>
+  </div>
+
+  <div class="toast-wrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+    const levels = ["Básico", "Intermediário", "Avançado"];
+    const types = ["Society", "Futsal", "Campo", "Pelada aberta"];
+    const positions = ["Goleiro", "Zagueiro", "Lateral", "Volante", "Meia", "Ponta", "Centroavante", "Fixo", "Qualquer"];
+    const cities = [
+      "São Paulo - SP",
+      "Campinas - SP",
+      "Piracicaba - SP",
+      "Ribeirão Preto - SP",
+      "Rio de Janeiro - RJ",
+      "Belo Horizonte - MG",
+      "Curitiba - PR",
+      "Porto Alegre - RS",
+      "Brasília - DF",
+      "Salvador - BA",
+      "Fortaleza - CE",
+      "Recife - PE"
+    ];
+
+    const t = {
+      pt: {
+        nav_find: "Buscar Racha",
+        nav_my: "Meus Jogos",
+        nav_fav: "Favoritos",
+        btn_publish: "+ Anunciar Racha",
+        hero_chip: "Plataforma Inteligente de Racha",
+        hero_title_a: "Acha, fecha",
+        hero_title_b: "e joga sem atrito.",
+        hero_sub: "Da descoberta ao pós-jogo: filtros avançados, combinação por perfil, lista de espera automática, confirmação instantânea e novos produtos para escalar sua comunidade.",
+        hero_btn_find: "Encontrar Partidas Agora",
+        hero_btn_tour: "Ver Novidades do Produto",
+        live_title: "Movimento ao vivo",
+        profile_title: "Seu Perfil de Jogo",
+        profile_level: "Nível",
+        profile_role: "Posição",
+        profile_rep: "Reputação",
+        profile_presence: "Presença",
+        filter_title: "Filtros inteligentes",
+        label_city: "Cidade",
+        label_date: "Data",
+        label_time: "Janela",
+        label_level: "Nível",
+        label_type: "Tipo",
+        label_positions: "Posições procuradas",
+        btn_clear: "Limpar",
+        btn_search: "Buscar",
+        quick_title: "Ferramentas rápidas",
+        quick_profile: "Atualizar perfil para melhorar recomendações",
+        quick_notify: "Ativar alertas por posição e região",
+        quick_calendar: "Exportar próximos jogos para calendário",
+        tab_all: "Todas",
+        tab_today: "Hoje",
+        tab_week: "Semana",
+        tab_urgent: "Urgentes",
+        tab_recommended: "Para você",
+        product_1_title: "Resenha Pro Organizador",
+        product_1_desc: "Gestão de lista, cobrança, recorrência de rachas, confirmação automática e painel de no-show.",
+        product_2_title: "Resenha Corporate",
+        product_2_desc: "Campeonatos internos para empresas com tabela, ranking, destaques e calendário unificado.",
+        product_3_title: "Resenha Arena Parceira",
+        product_3_desc: "Conecte sua arena, abra horários ociosos e receba times prontos com ocupação otimizada.",
+        product_btn: "Quero conhecer",
+        footer_text: "Resenha Futebol • Produto de ponta para organizar e jogar sem fricção.",
+        publish_title: "Anunciar novo racha",
+        label_name: "Nome do jogo",
+        label_place: "Local",
+        label_hour: "Horário",
+        label_vacancies: "Vagas",
+        label_contact: "Contato",
+        label_desc: "Descrição",
+        btn_cancel: "Cancelar",
+        btn_publish_now: "Publicar agora",
+        detail_title: "Detalhes da partida",
+        kpi_today: "Jogos hoje",
+        kpi_players: "Jogadores ativos",
+        kpi_cities: "Cidades",
+        kpi_fill: "Média de ocupação",
+        time_any: "Qualquer",
+        time_morning: "Manhã",
+        time_afternoon: "Tarde",
+        time_evening: "Noite",
+        time_latenight: "Madrugada",
+        type_all: "Todos",
+        level_all: "Todos",
+        city_all: "Todas",
+        sort_time: "Mais próximas",
+        sort_vacancies: "Mais vagas",
+        sort_level: "Nível crescente",
+        sort_match: "Maior match",
+        search_placeholder: "Buscar por nome ou local",
+        list_empty_title: "Nenhuma partida com esse filtro.",
+        list_empty_sub: "Ajuste os filtros ou publique um racha para trazer a galera.",
+        badge_urgent: "Urgente",
+        badge_waiting: "Fila ativa",
+        vacancies: "vagas",
+        full: "Lotado",
+        btn_join: "Entrar",
+        btn_wait: "Entrar na fila",
+        btn_details: "Detalhes",
+        btn_favorite: "Favoritar",
+        btn_unfavorite: "Remover favorito",
+        joined: "Você está dentro",
+        waiting: "Você está na fila",
+        detail_contact: "Contato",
+        detail_positions: "Posições",
+        detail_desc: "Descrição",
+        detail_rules: "Regras do jogo",
+        detail_cancel: "Sem compromisso, mas avisar ausência mantém seu score.",
+        detail_commit: "Pontualidade + respeito + intensidade compatível com o nível.",
+        detail_match_score: "Compatibilidade com seu perfil",
+        detail_people: "Jogadores totais",
+        detail_recurrence: "Recorrência",
+        recurrence_yes: "Semanal",
+        recurrence_no: "Avulso",
+        toast_published: "Racha publicado com sucesso e destaque inicial ativado.",
+        toast_missing: "Preencha os campos obrigatórios para publicar.",
+        toast_joined: "Entrada confirmada. Boa resenha.",
+        toast_wait: "Você entrou na lista de espera. Avisaremos se abrir vaga.",
+        toast_fav_on: "Partida adicionada aos favoritos.",
+        toast_fav_off: "Partida removida dos favoritos.",
+        toast_profile: "Perfil atualizado. Recomendações recalculadas.",
+        toast_notify: "Alertas ativados para sua região e posição favorita.",
+        toast_calendar: "Próximos jogos exportados para seu calendário (simulado).",
+        toast_product: "Time de produto acionado. Vamos te chamar com demo.",
+        live_join: "Entrou agora",
+        live_new: "Novo racha",
+        live_last: "Última vaga",
+        hour: "h"
+      },
+      en: {
+        nav_find: "Find Matches",
+        nav_my: "My Games",
+        nav_fav: "Favorites",
+        btn_publish: "+ Post Match",
+        hero_chip: "Smart Pickup Football Platform",
+        hero_title_a: "Find, lock in,",
+        hero_title_b: "and play with zero friction.",
+        hero_sub: "From discovery to post-game: advanced filters, profile matching, auto waitlist, instant confirmation, and new products to scale your community.",
+        hero_btn_find: "Find Matches Now",
+        hero_btn_tour: "See Product Updates",
+        live_title: "Live activity",
+        profile_title: "Your Player Profile",
+        profile_level: "Level",
+        profile_role: "Position",
+        profile_rep: "Reputation",
+        profile_presence: "Attendance",
+        filter_title: "Smart filters",
+        label_city: "City",
+        label_date: "Date",
+        label_time: "Window",
+        label_level: "Level",
+        label_type: "Type",
+        label_positions: "Needed positions",
+        btn_clear: "Clear",
+        btn_search: "Search",
+        quick_title: "Quick tools",
+        quick_profile: "Update profile to improve recommendations",
+        quick_notify: "Enable alerts by position and region",
+        quick_calendar: "Export next games to calendar",
+        tab_all: "All",
+        tab_today: "Today",
+        tab_week: "Week",
+        tab_urgent: "Urgent",
+        tab_recommended: "For you",
+        product_1_title: "Organizer Pro",
+        product_1_desc: "Roster, payments, recurring games, auto confirmations and no-show dashboard.",
+        product_2_title: "Corporate League",
+        product_2_desc: "Internal tournaments for companies with standings, highlights and unified schedule.",
+        product_3_title: "Partner Arena",
+        product_3_desc: "Connect your arena, open empty slots and receive ready-to-play squads.",
+        product_btn: "I want a demo",
+        footer_text: "Resenha Futebol • Best-in-class product to organize and play frictionless football.",
+        publish_title: "Create new match",
+        label_name: "Game name",
+        label_place: "Venue",
+        label_hour: "Time",
+        label_vacancies: "Spots",
+        label_contact: "Contact",
+        label_desc: "Description",
+        btn_cancel: "Cancel",
+        btn_publish_now: "Publish now",
+        detail_title: "Match details",
+        kpi_today: "Matches today",
+        kpi_players: "Active players",
+        kpi_cities: "Cities",
+        kpi_fill: "Average occupancy",
+        time_any: "Any",
+        time_morning: "Morning",
+        time_afternoon: "Afternoon",
+        time_evening: "Evening",
+        time_latenight: "Late night",
+        type_all: "All",
+        level_all: "All",
+        city_all: "All",
+        sort_time: "Closest first",
+        sort_vacancies: "Most spots",
+        sort_level: "Level ascending",
+        sort_match: "Highest match score",
+        search_placeholder: "Search by name or venue",
+        list_empty_title: "No matches with this filter.",
+        list_empty_sub: "Adjust filters or publish a match to bring players in.",
+        badge_urgent: "Urgent",
+        badge_waiting: "Waitlist on",
+        vacancies: "spots",
+        full: "Full",
+        btn_join: "Join",
+        btn_wait: "Join waitlist",
+        btn_details: "Details",
+        btn_favorite: "Favorite",
+        btn_unfavorite: "Unfavorite",
+        joined: "You are in",
+        waiting: "You are waitlisted",
+        detail_contact: "Contact",
+        detail_positions: "Positions",
+        detail_desc: "Description",
+        detail_rules: "Game rules",
+        detail_cancel: "No pressure, but absence notice keeps your score high.",
+        detail_commit: "Punctuality + respect + intensity aligned with skill level.",
+        detail_match_score: "Match score with your profile",
+        detail_people: "Total players",
+        detail_recurrence: "Recurrence",
+        recurrence_yes: "Weekly",
+        recurrence_no: "One-off",
+        toast_published: "Match posted successfully with initial boost.",
+        toast_missing: "Fill all required fields to publish.",
+        toast_joined: "Confirmed. Have a great game.",
+        toast_wait: "You are on the waitlist. We'll notify you if a spot opens.",
+        toast_fav_on: "Match added to favorites.",
+        toast_fav_off: "Match removed from favorites.",
+        toast_profile: "Profile updated. Recommendations recalculated.",
+        toast_notify: "Alerts enabled for your region and role.",
+        toast_calendar: "Upcoming games exported to your calendar (simulated).",
+        toast_product: "Product team notified. We'll reach out with a demo.",
+        live_join: "Just joined",
+        live_new: "New match",
+        live_last: "Last slot",
+        hour: "h"
+      },
+      es: {
+        nav_find: "Buscar Partido",
+        nav_my: "Mis Juegos",
+        nav_fav: "Favoritos",
+        btn_publish: "+ Publicar Partido",
+        hero_chip: "Plataforma Inteligente de Pachanga",
+        hero_title_a: "Encuentra, confirma",
+        hero_title_b: "y juega sin fricción.",
+        hero_sub: "Desde el descubrimiento hasta el post-partido: filtros avanzados, match por perfil, lista de espera automática, confirmación instantánea y nuevos productos para escalar tu comunidad.",
+        hero_btn_find: "Encontrar Partidos Ahora",
+        hero_btn_tour: "Ver Novedades del Producto",
+        live_title: "Actividad en vivo",
+        profile_title: "Tu Perfil de Juego",
+        profile_level: "Nivel",
+        profile_role: "Posición",
+        profile_rep: "Reputación",
+        profile_presence: "Asistencia",
+        filter_title: "Filtros inteligentes",
+        label_city: "Ciudad",
+        label_date: "Fecha",
+        label_time: "Ventana",
+        label_level: "Nivel",
+        label_type: "Tipo",
+        label_positions: "Posiciones buscadas",
+        btn_clear: "Limpiar",
+        btn_search: "Buscar",
+        quick_title: "Herramientas rápidas",
+        quick_profile: "Actualizar perfil para mejores recomendaciones",
+        quick_notify: "Activar alertas por posición y zona",
+        quick_calendar: "Exportar próximos juegos al calendario",
+        tab_all: "Todas",
+        tab_today: "Hoy",
+        tab_week: "Semana",
+        tab_urgent: "Urgentes",
+        tab_recommended: "Para ti",
+        product_1_title: "Resenha Pro Organizador",
+        product_1_desc: "Gestión de lista, cobro, recurrencia, confirmación automática y panel de ausencias.",
+        product_2_title: "Resenha Corporate",
+        product_2_desc: "Torneos internos para empresas con tabla, ranking y calendario unificado.",
+        product_3_title: "Resenha Arena Socia",
+        product_3_desc: "Conecta tu arena, abre horarios ociosos y recibe equipos listos para jugar.",
+        product_btn: "Quiero demo",
+        footer_text: "Resenha Futebol • Producto top para organizar y jugar sin fricción.",
+        publish_title: "Publicar nuevo partido",
+        label_name: "Nombre del juego",
+        label_place: "Lugar",
+        label_hour: "Hora",
+        label_vacancies: "Vacantes",
+        label_contact: "Contacto",
+        label_desc: "Descripción",
+        btn_cancel: "Cancelar",
+        btn_publish_now: "Publicar ahora",
+        detail_title: "Detalles del partido",
+        kpi_today: "Partidos hoy",
+        kpi_players: "Jugadores activos",
+        kpi_cities: "Ciudades",
+        kpi_fill: "Ocupación media",
+        time_any: "Cualquiera",
+        time_morning: "Mañana",
+        time_afternoon: "Tarde",
+        time_evening: "Noche",
+        time_latenight: "Madrugada",
+        type_all: "Todos",
+        level_all: "Todos",
+        city_all: "Todas",
+        sort_time: "Más próximas",
+        sort_vacancies: "Más vacantes",
+        sort_level: "Nivel ascendente",
+        sort_match: "Mayor match",
+        search_placeholder: "Buscar por nombre o sede",
+        list_empty_title: "No hay partidos con este filtro.",
+        list_empty_sub: "Ajusta filtros o publica uno para reunir la banda.",
+        badge_urgent: "Urgente",
+        badge_waiting: "Lista activa",
+        vacancies: "vacantes",
+        full: "Lleno",
+        btn_join: "Entrar",
+        btn_wait: "Ir a lista",
+        btn_details: "Detalles",
+        btn_favorite: "Favorito",
+        btn_unfavorite: "Quitar favorito",
+        joined: "Ya estás dentro",
+        waiting: "Estás en espera",
+        detail_contact: "Contacto",
+        detail_positions: "Posiciones",
+        detail_desc: "Descripción",
+        detail_rules: "Reglas del juego",
+        detail_cancel: "Sin presión, pero avisar ausencia mantiene tu score.",
+        detail_commit: "Puntualidad + respeto + intensidad acorde al nivel.",
+        detail_match_score: "Compatibilidad con tu perfil",
+        detail_people: "Jugadores totales",
+        detail_recurrence: "Recurrencia",
+        recurrence_yes: "Semanal",
+        recurrence_no: "Único",
+        toast_published: "Partido publicado con impulso inicial activado.",
+        toast_missing: "Completa los campos obligatorios para publicar.",
+        toast_joined: "Entrada confirmada. Buena pachanga.",
+        toast_wait: "Entraste en la lista de espera. Avisaremos si se libera un cupo.",
+        toast_fav_on: "Partido agregado a favoritos.",
+        toast_fav_off: "Partido removido de favoritos.",
+        toast_profile: "Perfil actualizado. Recomendaciones recalculadas.",
+        toast_notify: "Alertas activadas para tu zona y posición.",
+        toast_calendar: "Próximos juegos exportados al calendario (simulado).",
+        toast_product: "Equipo de producto avisado. Te contactaremos con demo.",
+        live_join: "Se unió ahora",
+        live_new: "Nuevo partido",
+        live_last: "Último cupo",
+        hour: "h"
+      }
+    };
+
+    let currentLang = localStorage.getItem("resenha_lang") || "pt";
+    const state = {
+      view: "descobrir",
+      tab: "all",
+      search: "",
+      sortBy: "time",
+      filters: {
+        city: "",
+        date: "",
+        time: "",
+        level: "",
+        type: "",
+        positions: []
+      },
+      favorites: new Set(JSON.parse(localStorage.getItem("resenha_fav") || "[]")),
+      joined: new Set(JSON.parse(localStorage.getItem("resenha_joined") || "[]")),
+      waitlist: new Set(JSON.parse(localStorage.getItem("resenha_waitlist") || "[]")),
+      profile: JSON.parse(localStorage.getItem("resenha_profile") || "{}")
+    };
+
+    const defaultProfile = {
+      name: "João Boleiro",
+      city: "São Paulo - SP",
+      level: "Intermediário",
+      position: "Meia",
+      reputation: 4.8,
+      presence: 96
+    };
+    state.profile = Object.assign({}, defaultProfile, state.profile);
+
+    function daysFromNow(days, hour) {
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
+      d.setDate(d.getDate() + days);
+      const [h, m] = hour.split(":").map(Number);
+      d.setHours(h, m, 0, 0);
+      return d;
+    }
+
+    const matches = [
+      {
+        id: 1,
+        name: "Racha da Sé Prime",
+        city: "São Paulo - SP",
+        place: "Arena Anhangabaú • Centro",
+        date: daysFromNow(0, "19:00"),
+        level: "Intermediário",
+        type: "Society",
+        vacancies: 3,
+        totalPlayers: 14,
+        positionsNeeded: ["Meia", "Ponta", "Centroavante"],
+        description: "Jogo firme, bola rápida e galera compromissada. Coletes e bola inclusos.",
+        urgent: true,
+        recurring: true,
+        contact: "(11) 99876-5432"
+      },
+      {
+        id: 2,
+        name: "Pelada Beira Rio",
+        city: "Piracicaba - SP",
+        place: "Parque do Povo • Beira Rio",
+        date: daysFromNow(0, "07:30"),
+        level: "Básico",
+        type: "Pelada aberta",
+        vacancies: 5,
+        totalPlayers: 22,
+        positionsNeeded: ["Goleiro", "Zagueiro", "Qualquer"],
+        description: "Clima leve, todo mundo joga. Ideal para voltar ao ritmo e fazer resenha.",
+        urgent: false,
+        recurring: true,
+        contact: "(19) 99123-4567"
+      },
+      {
+        id: 3,
+        name: "Copa Jardim América",
+        city: "Campinas - SP",
+        place: "Arena Campos • Barão de Itapura",
+        date: daysFromNow(1, "20:00"),
+        level: "Avançado",
+        type: "Society",
+        vacancies: 1,
+        totalPlayers: 14,
+        positionsNeeded: ["Goleiro"],
+        description: "Rodada forte, intensidade alta e excelente organização.",
+        urgent: true,
+        recurring: false,
+        contact: "(19) 98765-4321"
+      },
+      {
+        id: 4,
+        name: "Futsal Vila Noturna",
+        city: "São Paulo - SP",
+        place: "Quadra Vila Madalena",
+        date: daysFromNow(2, "21:00"),
+        level: "Intermediário",
+        type: "Futsal",
+        vacancies: 4,
+        totalPlayers: 10,
+        positionsNeeded: ["Fixo", "Volante", "Meia"],
+        description: "Jogo técnico, bom toque e rotação rápida.",
+        urgent: false,
+        recurring: true,
+        contact: "(11) 97654-3210"
+      },
+      {
+        id: 5,
+        name: "Guerreiros do Sul",
+        city: "Porto Alegre - RS",
+        place: "Campo Menino Deus",
+        date: daysFromNow(3, "09:00"),
+        level: "Básico",
+        type: "Campo",
+        vacancies: 8,
+        totalPlayers: 22,
+        positionsNeeded: ["Zagueiro", "Lateral", "Centroavante"],
+        description: "Domingo clássico, grama natural e energia lá em cima.",
+        urgent: false,
+        recurring: true,
+        contact: "(51) 99876-1234"
+      },
+      {
+        id: 6,
+        name: "Fut Noturno Lapa",
+        city: "São Paulo - SP",
+        place: "Arena FutNight • Lapa",
+        date: daysFromNow(4, "22:00"),
+        level: "Intermediário",
+        type: "Society",
+        vacancies: 0,
+        totalPlayers: 14,
+        positionsNeeded: ["Qualquer"],
+        description: "Partida premium em horário noturno. Lotado com fila ativa.",
+        urgent: false,
+        recurring: true,
+        contact: "(11) 95432-1098"
+      },
+      {
+        id: 7,
+        name: "Racha da Praça",
+        city: "Ribeirão Preto - SP",
+        place: "Praça do Coração • Centro",
+        date: daysFromNow(5, "16:00"),
+        level: "Básico",
+        type: "Pelada aberta",
+        vacancies: 6,
+        totalPlayers: 22,
+        positionsNeeded: ["Qualquer"],
+        description: "Tradicional da cidade, ambiente inclusivo e competitivo na medida.",
+        urgent: false,
+        recurring: true,
+        contact: "(16) 98765-5678"
+      },
+      {
+        id: 8,
+        name: "Elite FC Futsal",
+        city: "Belo Horizonte - MG",
+        place: "CT Elite • Savassi",
+        date: daysFromNow(6, "20:30"),
+        level: "Avançado",
+        type: "Futsal",
+        vacancies: 2,
+        totalPlayers: 10,
+        positionsNeeded: ["Ponta", "Fixo"],
+        description: "Alta intensidade, marcação forte e transição rápida.",
+        urgent: false,
+        recurring: false,
+        contact: "(31) 99999-8888"
+      },
+      {
+        id: 9,
+        name: "Domingão do Lago",
+        city: "Brasília - DF",
+        place: "Arena Lago Norte",
+        date: daysFromNow(2, "10:30"),
+        level: "Intermediário",
+        type: "Campo",
+        vacancies: 7,
+        totalPlayers: 22,
+        positionsNeeded: ["Lateral", "Meia", "Ponta"],
+        description: "Jogo em campo grande com gravação de highlights.",
+        urgent: false,
+        recurring: false,
+        contact: "(61) 98888-1111"
+      },
+      {
+        id: 10,
+        name: "Sunset Arena",
+        city: "Recife - PE",
+        place: "Arena Boa Viagem",
+        date: daysFromNow(1, "18:30"),
+        level: "Intermediário",
+        type: "Society",
+        vacancies: 2,
+        totalPlayers: 14,
+        positionsNeeded: ["Goleiro", "Volante"],
+        description: "Jogo no pôr do sol com ritmo alto e ótima estrutura.",
+        urgent: true,
+        recurring: true,
+        contact: "(81) 97777-4411"
+      }
+    ];
+
+    let tempPublishPositions = [];
+    let selectedMatchId = null;
+
+    const refs = {
+      matchList: document.getElementById("matchList"),
+      liveList: document.getElementById("liveList"),
+      kpis: document.getElementById("kpis"),
+      sortBy: document.getElementById("sortBy"),
+      searchInput: document.getElementById("searchInput"),
+      filterPositions: document.getElementById("filterPositions"),
+      publishPositions: document.getElementById("publishPositions"),
+      toastWrap: document.getElementById("toastWrap"),
+      clock: document.getElementById("clock"),
+      profileName: document.getElementById("profileName"),
+      profileCity: document.getElementById("profileCity"),
+      profileLevel: document.getElementById("profileLevel"),
+      profilePos: document.getElementById("profilePos"),
+      profileRep: document.getElementById("profileRep"),
+      profilePresence: document.getElementById("profilePresence"),
+      profileAvatar: document.getElementById("profileAvatar"),
+      detailBody: document.getElementById("detailBody")
+    };
+
+    function tr(key) {
+      return (t[currentLang] && t[currentLang][key]) || t.pt[key] || key;
+    }
+
+    function levelIndex(level) {
+      return levels.indexOf(level);
+    }
+
+    function saveState() {
+      localStorage.setItem("resenha_fav", JSON.stringify([...state.favorites]));
+      localStorage.setItem("resenha_joined", JSON.stringify([...state.joined]));
+      localStorage.setItem("resenha_waitlist", JSON.stringify([...state.waitlist]));
+      localStorage.setItem("resenha_profile", JSON.stringify(state.profile));
+      localStorage.setItem("resenha_lang", currentLang);
+    }
+
+    function formatDate(matchDate) {
+      const d = new Date(matchDate);
+      const day = d.toLocaleDateString("pt-BR", { day: "2-digit" });
+      const month = d.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "").toUpperCase();
+      const hour = d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+      return { day, month, hour, date: d };
+    }
+
+    function dateOnly(d) {
+      const x = new Date(d);
+      x.setHours(0, 0, 0, 0);
+      return x;
+    }
+
+    function timeBucket(matchDate) {
+      const h = new Date(matchDate).getHours();
+      if (h < 12) return "morning";
+      if (h < 18) return "afternoon";
+      if (h < 23) return "evening";
+      return "latenight";
+    }
+
+    function computeMatchScore(match) {
+      let score = 45;
+      if (state.profile.city === match.city) score += 18;
+      if (state.profile.level === match.level) score += 15;
+      if (match.positionsNeeded.includes(state.profile.position) || match.positionsNeeded.includes("Qualquer")) score += 16;
+      if (match.vacancies <= 2) score += 4;
+      if (match.urgent) score += 5;
+      if (score > 99) score = 99;
+      return score;
+    }
+
+    function renderKPIs() {
+      const today = dateOnly(new Date()).getTime();
+      const todayCount = matches.filter((m) => dateOnly(m.date).getTime() === today).length;
+      const activePlayers = matches.reduce((acc, m) => acc + (m.totalPlayers - m.vacancies), 0) + 1200;
+      const cityCount = new Set(matches.map((m) => m.city)).size;
+      const fill = Math.round(
+        (matches.reduce((acc, m) => acc + (m.totalPlayers - m.vacancies) / m.totalPlayers, 0) / matches.length) * 100
+      );
+      const items = [
+        { num: String(todayCount), label: tr("kpi_today") },
+        { num: activePlayers.toLocaleString("pt-BR"), label: tr("kpi_players") },
+        { num: String(cityCount), label: tr("kpi_cities") },
+        { num: fill + "%", label: tr("kpi_fill") }
+      ];
+      refs.kpis.innerHTML = items
+        .map(
+          (k) =>
+            `<div class="kpi"><div class="num">${k.num}</div><div class="label">${k.label}</div></div>`
+        )
+        .join("");
+    }
+
+    function randomLiveEvents() {
+      const base = [
+        { type: "join", city: "São Paulo - SP", text: "Racha da Sé Prime" },
+        { type: "new", city: "Recife - PE", text: "Sunset Arena" },
+        { type: "last", city: "Campinas - SP", text: "Copa Jardim América" }
+      ];
+      return base;
+    }
+
+    function renderLiveFeed() {
+      const data = randomLiveEvents();
+      refs.liveList.innerHTML = data
+        .map((item) => {
+          const cls = item.type === "join" ? "new" : item.type === "new" ? "hot" : "last";
+          const labelKey = item.type === "join" ? "live_join" : item.type === "new" ? "live_new" : "live_last";
+          return `
+            <div class="live-item">
+              <div>
+                <b>${item.text}</b>
+                <span>${item.city}</span>
+              </div>
+              <div class="live-badge ${cls}">${tr(labelKey)}</div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function buildSelectOptions() {
+      const fCity = document.getElementById("f-city");
+      const pCity = document.getElementById("p-city");
+      const cityOptions = [`<option value="">${tr("city_all")}</option>`]
+        .concat(cities.map((c) => `<option value="${c}">${c}</option>`))
+        .join("");
+      fCity.innerHTML = cityOptions;
+      pCity.innerHTML = cities.map((c) => `<option value="${c}">${c}</option>`).join("");
+      pCity.value = state.profile.city;
+
+      const fTime = document.getElementById("f-time");
+      fTime.innerHTML = `
+        <option value="">${tr("time_any")}</option>
+        <option value="morning">${tr("time_morning")}</option>
+        <option value="afternoon">${tr("time_afternoon")}</option>
+        <option value="evening">${tr("time_evening")}</option>
+        <option value="latenight">${tr("time_latenight")}</option>
+      `;
+
+      const fLevel = document.getElementById("f-level");
+      const pLevel = document.getElementById("p-level");
+      fLevel.innerHTML = [`<option value="">${tr("level_all")}</option>`]
+        .concat(levels.map((l) => `<option value="${l}">${l}</option>`))
+        .join("");
+      pLevel.innerHTML = levels.map((l) => `<option value="${l}">${l}</option>`).join("");
+      pLevel.value = state.profile.level;
+
+      const fType = document.getElementById("f-type");
+      const pType = document.getElementById("p-type");
+      fType.innerHTML = [`<option value="">${tr("type_all")}</option>`]
+        .concat(types.map((tp) => `<option value="${tp}">${tp}</option>`))
+        .join("");
+      pType.innerHTML = types.map((tp) => `<option value="${tp}">${tp}</option>`).join("");
+    }
+
+    function renderPositionChips(container, selectedArr, onToggle) {
+      container.innerHTML = positions
+        .map((p) => {
+          const active = selectedArr.includes(p) ? "active" : "";
+          return `<button class="chip-btn ${active}" data-pos="${p}">${p}</button>`;
+        })
+        .join("");
+      container.querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", () => onToggle(btn.dataset.pos));
+      });
+    }
+
+    function updateFilterChips() {
+      renderPositionChips(refs.filterPositions, state.filters.positions, (pos) => {
+        const set = new Set(state.filters.positions);
+        if (set.has(pos)) {
+          set.delete(pos);
+        } else {
+          set.add(pos);
+        }
+        state.filters.positions = [...set];
+        updateFilterChips();
+      });
+    }
+
+    function updatePublishChips() {
+      renderPositionChips(refs.publishPositions, tempPublishPositions, (pos) => {
+        const set = new Set(tempPublishPositions);
+        if (set.has(pos)) {
+          set.delete(pos);
+        } else {
+          set.add(pos);
+        }
+        tempPublishPositions = [...set];
+        updatePublishChips();
+      });
+    }
+
+    function syncProfileUI() {
+      refs.profileName.textContent = state.profile.name;
+      refs.profileCity.textContent = state.profile.city;
+      refs.profileLevel.textContent = state.profile.level;
+      refs.profilePos.textContent = state.profile.position;
+      refs.profileRep.textContent = `${state.profile.reputation.toFixed(1)}/5`;
+      refs.profilePresence.textContent = `${state.profile.presence}%`;
+      refs.profileAvatar.textContent = state.profile.name
+        .split(" ")
+        .slice(0, 2)
+        .map((x) => x.charAt(0).toUpperCase())
+        .join("");
+    }
+
+    function renderSortOptions() {
+      refs.sortBy.innerHTML = `
+        <option value="time">${tr("sort_time")}</option>
+        <option value="vacancies">${tr("sort_vacancies")}</option>
+        <option value="level">${tr("sort_level")}</option>
+        <option value="score">${tr("sort_match")}</option>
+      `;
+      refs.sortBy.value = state.sortBy;
+    }
+
+    function filterMatches() {
+      let out = matches.slice();
+      const now = new Date();
+      const in7 = new Date(now);
+      in7.setDate(now.getDate() + 7);
+
+      if (state.view === "meus") {
+        out = out.filter((m) => state.joined.has(m.id));
+      } else if (state.view === "favoritos") {
+        out = out.filter((m) => state.favorites.has(m.id));
+      }
+
+      if (state.tab === "today") {
+        const today = dateOnly(now).getTime();
+        out = out.filter((m) => dateOnly(m.date).getTime() === today);
+      }
+      if (state.tab === "week") {
+        out = out.filter((m) => m.date <= in7);
+      }
+      if (state.tab === "urgent") {
+        out = out.filter((m) => m.urgent || m.vacancies <= 2);
+      }
+      if (state.tab === "recommended") {
+        out = out.filter((m) => computeMatchScore(m) >= 70);
+      }
+
+      if (state.filters.city) out = out.filter((m) => m.city === state.filters.city);
+      if (state.filters.date) {
+        const target = dateOnly(state.filters.date).getTime();
+        out = out.filter((m) => dateOnly(m.date).getTime() === target);
+      }
+      if (state.filters.time) out = out.filter((m) => timeBucket(m.date) === state.filters.time);
+      if (state.filters.level) out = out.filter((m) => m.level === state.filters.level);
+      if (state.filters.type) out = out.filter((m) => m.type === state.filters.type);
+
+      if (state.filters.positions.length) {
+        out = out.filter((m) =>
+          state.filters.positions.some((p) => m.positionsNeeded.includes(p) || m.positionsNeeded.includes("Qualquer"))
+        );
+      }
+
+      if (state.search.trim()) {
+        const s = state.search.trim().toLowerCase();
+        out = out.filter((m) => `${m.name} ${m.place} ${m.city}`.toLowerCase().includes(s));
+      }
+
+      if (state.sortBy === "time") out.sort((a, b) => a.date - b.date);
+      if (state.sortBy === "vacancies") out.sort((a, b) => b.vacancies - a.vacancies);
+      if (state.sortBy === "level") out.sort((a, b) => levelIndex(a.level) - levelIndex(b.level));
+      if (state.sortBy === "score") out.sort((a, b) => computeMatchScore(b) - computeMatchScore(a));
+
+      return out;
+    }
+
+    function createMatchCard(match) {
+      const { day, month, hour } = formatDate(match.date);
+      const lv = levelIndex(match.level);
+      const isFull = match.vacancies <= 0;
+      const isFav = state.favorites.has(match.id);
+      const isJoined = state.joined.has(match.id);
+      const isWait = state.waitlist.has(match.id);
+      const score = computeMatchScore(match);
+      const posPreview = match.positionsNeeded.slice(0, 2).join(", ") + (match.positionsNeeded.length > 2 ? "..." : "");
+
+      const joinLabel = isJoined ? tr("joined") : isWait ? tr("waiting") : isFull ? tr("btn_wait") : tr("btn_join");
+      const joinClass = isJoined ? "joined" : isFull ? "wait" : "primary";
+
+      return `
+        <article class="match ${match.urgent ? "hot" : ""}" data-id="${match.id}">
+          <div class="date-pill">
+            <div class="day">${day}</div>
+            <div class="month">${month}</div>
+            <div class="hour">${hour}</div>
+          </div>
+          <div class="match-main">
+            <h3 title="${match.name}">${match.name}</h3>
+            <p class="meta">📍 ${match.place} • ${match.city}</p>
+            <div class="tag-row">
+              <span class="tag level-${lv}">${match.level}</span>
+              <span class="tag type">${match.type}</span>
+              <span class="tag pos">${posPreview}</span>
+              ${match.vacancies === 0 ? `<span class="tag mix">${tr("badge_waiting")}</span>` : ""}
+            </div>
+          </div>
+          <div class="match-side">
+            <div class="vacancy" style="${isFull ? "color:#8ea7d6;" : ""}">${isFull ? "—" : match.vacancies}</div>
+            <div class="vacancy-label">${isFull ? tr("full") : tr("vacancies")}</div>
+            <div class="score">${score}% ${tr("detail_match_score").toLowerCase()}</div>
+            <div class="match-actions">
+              <button class="icon-btn favorite ${isFav ? "active" : ""}" data-action="favorite" data-id="${match.id}">
+                ${isFav ? "★" : "☆"} ${isFav ? tr("btn_unfavorite") : tr("btn_favorite")}
+              </button>
+              <button class="icon-btn" data-action="details" data-id="${match.id}">${tr("btn_details")}</button>
+              <button class="join-btn ${joinClass}" data-action="join" data-id="${match.id}" ${isJoined ? "disabled" : ""}>
+                ${joinLabel}
+              </button>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderMatches() {
+      const list = filterMatches();
+      if (!list.length) {
+        refs.matchList.innerHTML = `
+          <div class="empty">
+            <div style="font-size:2rem;">⚽</div>
+            <h4>${tr("list_empty_title")}</h4>
+            <p style="margin-top:6px;">${tr("list_empty_sub")}</p>
+          </div>
+        `;
+        return;
+      }
+      refs.matchList.innerHTML = list.map(createMatchCard).join("");
+    }
+
+    function showToast(msg, kind = "good") {
+      const el = document.createElement("div");
+      el.className = `toast ${kind}`;
+      el.textContent = msg;
+      refs.toastWrap.prepend(el);
+      setTimeout(() => {
+        el.style.opacity = "0";
+        el.style.transform = "translateX(20px)";
+      }, 2400);
+      setTimeout(() => el.remove(), 2800);
+    }
+
+    function setActiveView(nextView) {
+      state.view = nextView;
+      document.querySelectorAll("[data-view-btn]").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.viewBtn === nextView);
+      });
+      renderMatches();
+    }
+
+    function setActiveTab(nextTab) {
+      state.tab = nextTab;
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.tab === nextTab);
+      });
+      renderMatches();
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.add("open");
+      document.getElementById(id).setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove("open");
+      document.getElementById(id).setAttribute("aria-hidden", "true");
+    }
+
+    function setupGlobalEvents() {
+      document.querySelectorAll("[data-close-modal]").forEach((btn) => {
+        btn.addEventListener("click", () => closeModal(btn.dataset.closeModal));
+      });
+      document.querySelectorAll(".modal-overlay").forEach((ov) => {
+        ov.addEventListener("click", (e) => {
+          if (e.target === ov) closeModal(ov.id);
+        });
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeModal("publishModal");
+          closeModal("detailModal");
+        }
+      });
+    }
+
+    function renderDetail(matchId) {
+      const match = matches.find((m) => m.id === matchId);
+      if (!match) return;
+      selectedMatchId = matchId;
+      const dt = new Date(match.date);
+      const dateFull = dt.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" });
+      const isFull = match.vacancies <= 0;
+      const statusClass = isFull ? "bad" : match.vacancies <= 2 ? "warn" : "good";
+      const statusText = isFull ? tr("full") : `${match.vacancies} ${tr("vacancies")}`;
+      const score = computeMatchScore(match);
+      refs.detailBody.innerHTML = `
+        <div class="detail-panel">
+          <h4>${match.name}</h4>
+          <p>📍 ${match.place} • ${match.city}</p>
+          <p style="margin-top:5px;">📅 ${dateFull} • ${dt.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</p>
         </div>
-        <div class="vagas-label">${cheio ? t('btn_lotado') : t('vagas_label')}</div>
-        <button class="btn-entrar ${cheio?'cheio-btn':''}"
-          onclick="event.stopPropagation(); ${cheio ? '' : `abrirDetalhe(${j.id})`}">
-          ${cheio ? t('btn_lotado') : t('btn_entrar')}
-        </button>
-      </div>
-    </div>`;
-  }).join('');
-}
 
-// ===================== FILTROS =====================
-function buscar() {
-  const cidade = document.getElementById('f-cidade').value;
-  const data = document.getElementById('f-data').value;
-  const horario = document.getElementById('f-horario').value;
-  const nivelSel = document.getElementById('f-nivel').value;
-  const posSelected = [...document.querySelectorAll('#posicoes-filtro .pos-btn.selected')].map(b => b.getAttribute('data-pos'));
+        <div class="modal-grid">
+          <div class="detail-panel">
+            <h4>${tr("detail_match_score")}</h4>
+            <p><span class="status-pill good">${score}%</span></p>
+          </div>
+          <div class="detail-panel">
+            <h4>${tr("label_vacancies")}</h4>
+            <p><span class="status-pill ${statusClass}">${statusText}</span></p>
+          </div>
+          <div class="detail-panel">
+            <h4>${tr("detail_people")}</h4>
+            <p>${match.totalPlayers}</p>
+          </div>
+          <div class="detail-panel">
+            <h4>${tr("detail_recurrence")}</h4>
+            <p>${match.recurring ? tr("recurrence_yes") : tr("recurrence_no")}</p>
+          </div>
+        </div>
 
-  // Monta mapa de nível traduzido → PT original
-  const nivelMap = {
-    [t('nivel_basico')]: 'Básico',
-    [t('nivel_intermediario')]: 'Intermediário',
-    [t('nivel_avancado')]: 'Avançado',
-  };
-  const nivelPT = nivelMap[nivelSel] || nivelSel;
+        <div class="detail-panel">
+          <h4>${tr("detail_positions")}</h4>
+          <p>${match.positionsNeeded.join(", ")}</p>
+        </div>
 
-  jogosFiltrados = jogos.filter(j => {
-    if (cidade && j.cidade !== cidade) return false;
-    if (data && j.data.str !== data) return false;
-    if (nivelSel && j.nivel !== nivelPT) return false;
-    if (horario) {
-      const h = parseInt(j.data.hora);
-      if (horario === t('opt_manha') && h >= 12) return false;
-      if (horario === t('opt_tarde') && (h < 12 || h >= 18)) return false;
-      if (horario === t('opt_noite') && h < 18) return false;
+        <div class="detail-panel">
+          <h4>${tr("detail_desc")}</h4>
+          <p>${match.description}</p>
+        </div>
+
+        <div class="detail-panel">
+          <h4>${tr("detail_contact")}</h4>
+          <p>${match.contact}</p>
+        </div>
+
+        <div class="detail-panel">
+          <h4>${tr("detail_rules")}</h4>
+          <p>1. ${tr("detail_commit")}<br>2. ${tr("detail_cancel")}</p>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="detailFavoriteBtn">${state.favorites.has(match.id) ? tr("btn_unfavorite") : tr("btn_favorite")}</button>
+          <button class="btn btn-primary" id="detailJoinBtn">${isFull ? tr("btn_wait") : tr("btn_join")}</button>
+        </div>
+      `;
+      document.getElementById("detailFavoriteBtn").addEventListener("click", () => toggleFavorite(match.id));
+      document.getElementById("detailJoinBtn").addEventListener("click", () => joinMatch(match.id));
+      openModal("detailModal");
     }
-    if (posSelected.length > 0 && !posSelected.includes('Qualquer')) {
-      const temPos = posSelected.some(p => j.posicoes.includes(p) || j.posicoes.includes('Qualquer'));
-      if (!temPos) return false;
+
+    function joinMatch(matchId) {
+      const match = matches.find((m) => m.id === matchId);
+      if (!match) return;
+      if (state.joined.has(matchId)) return;
+      if (match.vacancies > 0) {
+        match.vacancies -= 1;
+        state.joined.add(matchId);
+        showToast(tr("toast_joined"), "good");
+      } else {
+        state.waitlist.add(matchId);
+        showToast(tr("toast_wait"), "warn");
+      }
+      saveState();
+      renderKPIs();
+      renderMatches();
+      if (selectedMatchId === matchId) renderDetail(matchId);
     }
-    return true;
-  });
 
-  aplicarTab();
-  mostrarToast(`${jogosFiltrados.length} ${t('toast_encontrados')}`);
-}
-
-function aplicarTab() {
-  let lista = [...jogosFiltrados];
-  const fim = new Date(); fim.setDate(fim.getDate() + 7);
-
-  if (tabAtual === 'hoje') lista = lista.filter(j => j.data.str === hoje.toISOString().split('T')[0]);
-  else if (tabAtual === 'semana') lista = lista.filter(j => j.data.obj <= fim);
-  else if (tabAtual === 'urgente') lista = lista.filter(j => j.urgente || j.vagas <= 2);
-
-  renderCards(lista);
-}
-
-function limparFiltros() {
-  document.getElementById('f-cidade').value = '';
-  document.getElementById('f-data').value = '';
-  document.getElementById('f-horario').value = '';
-  document.getElementById('f-nivel').value = '';
-  document.querySelectorAll('#posicoes-filtro .pos-btn').forEach(b => b.classList.remove('selected'));
-  jogosFiltrados = [...jogos];
-  aplicarTab();
-}
-
-function togglePos(btn) { btn.classList.toggle('selected'); }
-function togglePosForm(btn) { btn.classList.toggle('selected'); }
-
-function mudarTab(btn, tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  tabAtual = tab;
-  aplicarTab();
-}
-
-function mudarAba(aba) {
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  if (aba === 'meus') {
-    const meus = jogos.filter(j => j._meu);
-    meus.length === 0 ? mostrarToast(t('toast_sem_jogos')) : renderCards(meus);
-  } else {
-    aplicarTab();
-  }
-}
-
-function ordenar(criterio) {
-  if (criterio === 'data') jogosFiltrados.sort((a,b) => a.data.obj - b.data.obj);
-  if (criterio === 'vagas') jogosFiltrados.sort((a,b) => b.vagas - a.vagas);
-  if (criterio === 'nivel') {
-    const ordem = {'Básico':0,'Intermediário':1,'Avançado':2};
-    jogosFiltrados.sort((a,b) => ordem[a.nivel] - ordem[b.nivel]);
-  }
-  aplicarTab();
-}
-
-// ===================== MODAL ANUNCIAR =====================
-function abrirModalAnunciar() {
-  document.getElementById('modal-anunciar').classList.add('open');
-  document.getElementById('an-data').value = hoje.toISOString().split('T')[0];
-}
-
-function publicarJogo() {
-  const nome  = document.getElementById('an-nome').value.trim();
-  const cidade = document.getElementById('an-cidade').value;
-  const local = document.getElementById('an-local').value.trim();
-  const dataVal = document.getElementById('an-data').value;
-  const hora  = document.getElementById('an-hora').value;
-  const tipo  = document.getElementById('an-tipo').value;
-  const nivel = document.getElementById('an-nivel').value;
-  const vagas = parseInt(document.getElementById('an-vagas').value) || 3;
-  const desc  = document.getElementById('an-desc').value.trim();
-  const posicoes = [...document.querySelectorAll('#posicoes-form .pos-form-btn.selected')].map(b => b.getAttribute('data-pos'));
-
-  // Converte nível traduzido → PT original
-  const nivelMap = {
-    [t('nivel_basico')]: 'Básico',
-    [t('nivel_intermediario')]: 'Intermediário',
-    [t('nivel_avancado')]: 'Avançado',
-  };
-  const nivelPT = nivelMap[nivel] || nivel;
-
-  if (!nome || !local || !dataVal || !hora) {
-    mostrarToast(t('toast_campos'), true);
-    return;
-  }
-
-  const novoJogo = {
-    id: Date.now(), nome, cidade, local,
-    data: { obj: new Date(dataVal + 'T' + hora), str: dataVal, hora },
-    nivel: nivelPT, tipo, vagas, totalVagas: vagas + 11,
-    posicoes: posicoes.length ? posicoes : ['Qualquer'],
-    desc: desc || 'Venha jogar conosco!',
-    urgente: false, contato: 'Direto no app', _meu: true
-  };
-
-  jogos.unshift(novoJogo);
-  jogosFiltrados = [...jogos];
-  fecharModal('modal-anunciar');
-  aplicarTab();
-  mostrarToast('⚽ ' + t('toast_publicado'));
-
-  document.getElementById('an-nome').value = '';
-  document.getElementById('an-local').value = '';
-  document.getElementById('an-hora').value = '';
-  document.getElementById('an-desc').value = '';
-  document.getElementById('an-vagas').value = '3';
-  document.querySelectorAll('#posicoes-form .pos-form-btn').forEach(b => b.classList.remove('selected'));
-}
-
-// ===================== MODAL DETALHE =====================
-function abrirDetalhe(id) {
-  const j = jogos.find(x => x.id === id);
-  if (!j) return;
-
-  const cheio = j.vagas === 0;
-  const tagNivel = getNivelClass(j.nivel);
-  const nivelLabel = getNivelLabel(j.nivel);
-  const diaSemana = j.data.obj.toLocaleString('pt-BR', {weekday:'long'});
-  const dataFull  = j.data.obj.toLocaleString('pt-BR', {day:'2-digit',month:'long',year:'numeric'});
-
-  document.getElementById('modal-detalhe-body').innerHTML = `
-    <div class="detalhe-header">
-      <div class="card-tags" style="margin-bottom:0.7rem">
-        <span class="tag ${tagNivel}">${nivelLabel}</span>
-        <span class="tag tag-tipo">${j.tipo}</span>
-        ${j.urgente ? `<span class="tag" style="color:var(--laranja);border-color:rgba(255,107,0,.3);background:rgba(255,107,0,.08)">${t('badge_urgente')}</span>` : ''}
-      </div>
-      <div class="detalhe-nome">${j.nome}</div>
-      <div class="detalhe-local">📍 ${j.local} &bull; ${j.cidade}</div>
-    </div>
-
-    <div class="detalhe-grid">
-      <div class="detalhe-item">
-        <div class="detalhe-item-val">${j.data.hora}</div>
-        <div class="detalhe-item-key">${t('detalhe_horario')}</div>
-      </div>
-      <div class="detalhe-item">
-        <div class="detalhe-item-val" style="${cheio?'color:var(--texto-muted)':''}">${cheio?'—':j.vagas}</div>
-        <div class="detalhe-item-key">${cheio ? t('detalhe_lotado') : t('detalhe_vagas')}</div>
-      </div>
-      <div class="detalhe-item">
-        <div class="detalhe-item-val">${j.totalVagas}</div>
-        <div class="detalhe-item-key">${t('detalhe_total')}</div>
-      </div>
-    </div>
-
-    <div class="detalhe-descricao">
-      📅 <strong>${diaSemana.charAt(0).toUpperCase()+diaSemana.slice(1)}, ${dataFull}</strong><br><br>
-      ${j.desc}
-    </div>
-
-    <div class="detalhe-posicoes">
-      <h4>${t('detalhe_posicoes')}</h4>
-      <div class="posicoes-grid">
-        ${j.posicoes.map(p => `<button class="pos-btn selected" style="pointer-events:none">${getPosLabel(p)}</button>`).join('')}
-      </div>
-    </div>
-
-    <div style="background:var(--cinza-medio);border:1px solid var(--cinza-borda);border-radius:10px;padding:0.8rem 1rem;margin-bottom:1.2rem;font-size:0.85rem">
-      📱 <strong>${t('detalhe_contato')}:</strong> ${j.contato}
-    </div>
-
-    ${cheio
-      ? `<button class="btn-confirmar" style="background:var(--cinza-borda);color:var(--texto-muted);cursor:not-allowed">${t('btn_vagas_esgotadas')}</button>`
-      : `<button class="btn-confirmar" onclick="confirmarEntrada(${j.id})">✅ ${t('btn_quero_jogar')}</button>`
+    function toggleFavorite(matchId) {
+      if (state.favorites.has(matchId)) {
+        state.favorites.delete(matchId);
+        showToast(tr("toast_fav_off"), "warn");
+      } else {
+        state.favorites.add(matchId);
+        showToast(tr("toast_fav_on"), "good");
+      }
+      saveState();
+      renderMatches();
+      if (selectedMatchId === matchId) renderDetail(matchId);
     }
-  `;
 
-  document.getElementById('modal-detalhe').classList.add('open');
-}
+    function bindDynamicActions() {
+      refs.matchList.addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-action]");
+        const card = e.target.closest(".match");
+        if (card && !btn) {
+          const id = Number(card.dataset.id);
+          renderDetail(id);
+          return;
+        }
+        if (!btn) return;
+        const id = Number(btn.dataset.id);
+        const action = btn.dataset.action;
+        if (action === "join") joinMatch(id);
+        if (action === "favorite") toggleFavorite(id);
+        if (action === "details") renderDetail(id);
+      });
+    }
 
-function confirmarEntrada(id) {
-  const j = jogos.find(x => x.id === id);
-  if (j && j.vagas > 0) {
-    j.vagas--;
-    fecharModal('modal-detalhe');
-    aplicarTab();
-    mostrarToast('⚽ ' + t('toast_entrou'));
-  }
-}
+    function clearFilters() {
+      state.filters = { city: "", date: "", time: "", level: "", type: "", positions: [] };
+      document.getElementById("f-city").value = "";
+      document.getElementById("f-date").value = "";
+      document.getElementById("f-time").value = "";
+      document.getElementById("f-level").value = "";
+      document.getElementById("f-type").value = "";
+      state.search = "";
+      refs.searchInput.value = "";
+      updateFilterChips();
+      renderMatches();
+    }
 
-// ===================== UTILS =====================
-function fecharModal(id) { document.getElementById(id).classList.remove('open'); }
+    function applyFilterInputs() {
+      state.filters.city = document.getElementById("f-city").value;
+      state.filters.date = document.getElementById("f-date").value;
+      state.filters.time = document.getElementById("f-time").value;
+      state.filters.level = document.getElementById("f-level").value;
+      state.filters.type = document.getElementById("f-type").value;
+      renderMatches();
+    }
 
-document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('open');
-  });
-});
+    function publishMatch() {
+      const name = document.getElementById("p-name").value.trim();
+      const city = document.getElementById("p-city").value;
+      const place = document.getElementById("p-place").value.trim();
+      const date = document.getElementById("p-date").value;
+      const hour = document.getElementById("p-hour").value;
+      const level = document.getElementById("p-level").value;
+      const type = document.getElementById("p-type").value;
+      const vacancies = Number(document.getElementById("p-vac").value || 0);
+      const contact = document.getElementById("p-contact").value.trim();
+      const description = document.getElementById("p-desc").value.trim();
+      if (!name || !city || !place || !date || !hour || !level || !type || !vacancies) {
+        showToast(tr("toast_missing"), "bad");
+        return;
+      }
+      const d = new Date(`${date}T${hour}:00`);
+      const newMatch = {
+        id: Date.now(),
+        name,
+        city,
+        place,
+        date: d,
+        level,
+        type,
+        vacancies,
+        totalPlayers: Math.min(vacancies + 11, 30),
+        positionsNeeded: tempPublishPositions.length ? tempPublishPositions.slice() : ["Qualquer"],
+        description: description || "Partida organizada com foco em qualidade e pontualidade.",
+        urgent: vacancies <= 2,
+        recurring: false,
+        contact: contact || "Contato no app"
+      };
+      matches.unshift(newMatch);
+      state.view = "descobrir";
+      setActiveView("descobrir");
+      clearPublishForm();
+      closeModal("publishModal");
+      renderKPIs();
+      renderMatches();
+      showToast(tr("toast_published"), "good");
+    }
 
-function mostrarToast(msg, erro) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.style.background = erro ? '#ff4444' : 'var(--verde)';
-  el.style.color = erro ? '#fff' : 'var(--preto)';
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 3000);
-}
+    function clearPublishForm() {
+      ["p-name", "p-place", "p-hour", "p-contact", "p-desc"].forEach((id) => (document.getElementById(id).value = ""));
+      document.getElementById("p-vac").value = 4;
+      document.getElementById("p-date").value = new Date().toISOString().slice(0, 10);
+      document.getElementById("p-city").value = state.profile.city;
+      document.getElementById("p-level").value = state.profile.level;
+      tempPublishPositions = [];
+      updatePublishChips();
+    }
 
-// ===================== INIT =====================
-document.getElementById('f-data').min = hoje.toISOString().split('T')[0];
-jogosFiltrados = [...jogos];
-aplicarTab();
-</script>
+    function applyLanguage() {
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        const key = el.dataset.i18n;
+        if (tr(key)) el.textContent = tr(key);
+      });
+      refs.searchInput.placeholder = tr("search_placeholder");
+      document.querySelectorAll(".lang button").forEach((b) => {
+        b.classList.toggle("active", b.dataset.lang === currentLang);
+      });
+      renderSortOptions();
+      buildSelectOptions();
+      updateFilterChips();
+      updatePublishChips();
+      renderKPIs();
+      renderLiveFeed();
+      renderMatches();
+    }
+
+    function updateClock() {
+      const now = new Date();
+      refs.clock.textContent = now.toLocaleString("pt-BR", {
+        weekday: "short",
+        day: "2-digit",
+        month: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function bindStaticEvents() {
+      document.querySelectorAll("[data-view-btn]").forEach((btn) => {
+        btn.addEventListener("click", () => setActiveView(btn.dataset.viewBtn));
+      });
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => setActiveTab(btn.dataset.tab));
+      });
+      document.querySelectorAll(".lang button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          currentLang = btn.dataset.lang;
+          saveState();
+          applyLanguage();
+        });
+      });
+      refs.sortBy.addEventListener("change", () => {
+        state.sortBy = refs.sortBy.value;
+        renderMatches();
+      });
+      refs.searchInput.addEventListener("input", () => {
+        state.search = refs.searchInput.value;
+        renderMatches();
+      });
+      document.getElementById("btnApplyFilters").addEventListener("click", applyFilterInputs);
+      document.getElementById("btnClearFilters").addEventListener("click", clearFilters);
+      document.getElementById("btnOpenPublish").addEventListener("click", () => openModal("publishModal"));
+      document.getElementById("btnHeroFind").addEventListener("click", () => {
+        setActiveView("descobrir");
+        setActiveTab("recommended");
+        document.querySelector(".layout").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      document.getElementById("btnHeroTour").addEventListener("click", () => {
+        document.querySelector(".product-strip").scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+      document.getElementById("btnPublishNow").addEventListener("click", publishMatch);
+
+      document.querySelectorAll("[data-product]").forEach((btn) => {
+        btn.addEventListener("click", () => showToast(tr("toast_product"), "good"));
+      });
+
+      document.getElementById("btnFillProfile").addEventListener("click", () => {
+        const options = ["Goleiro", "Zagueiro", "Lateral", "Volante", "Meia", "Ponta", "Centroavante", "Fixo"];
+        state.profile.position = options[Math.floor(Math.random() * options.length)];
+        state.profile.presence = Math.min(99, Math.max(82, state.profile.presence + Math.floor(Math.random() * 7 - 3)));
+        state.profile.reputation = Math.min(5, Math.max(4.1, +(state.profile.reputation + (Math.random() * 0.2 - 0.1)).toFixed(1)));
+        syncProfileUI();
+        saveState();
+        renderMatches();
+        showToast(tr("toast_profile"), "good");
+      });
+
+      document.getElementById("btnNotify").addEventListener("click", () => showToast(tr("toast_notify"), "good"));
+      document.getElementById("btnCalendar").addEventListener("click", () => showToast(tr("toast_calendar"), "good"));
+
+      const minDate = new Date().toISOString().slice(0, 10);
+      document.getElementById("f-date").min = minDate;
+      document.getElementById("p-date").min = minDate;
+      document.getElementById("p-date").value = minDate;
+    }
+
+    function init() {
+      syncProfileUI();
+      buildSelectOptions();
+      renderSortOptions();
+      updateFilterChips();
+      updatePublishChips();
+      bindStaticEvents();
+      bindDynamicActions();
+      setupGlobalEvents();
+      renderKPIs();
+      renderLiveFeed();
+      renderMatches();
+      applyLanguage();
+      updateClock();
+      setInterval(updateClock, 1000 * 30);
+    }
+
+    init();
+  </script>
 </body>
 </html>
